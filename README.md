@@ -1,10 +1,10 @@
 # 🐿️ Mon voyage en Angleterre
 
-> Une appli mobile pour apprendre l'anglais à l'oral, pensée pour une élève de CM2 qui part de zéro et qui va passer un séjour dans une famille anglaise.
+> Une appli mobile pour apprendre l'anglais à l'oral, pensée pour une élève de CM2 qui va passer un séjour dans une famille anglaise.
 
-Un écureuil roux sert de compagnon. Il dit les mots, l'enfant les répète, et il l'aide à corriger sa prononciation, toujours avec bienveillance. Chaque étape du voyage débloque une nouvelle partie de l'Angleterre, et chaque séance rapporte un autocollant à coller dans le passeport.
+Un écureuil roux sert de compagnon. Il dit les mots, l'enfant les répète, et il l'aide à corriger sa prononciation, toujours avec bienveillance. Chaque étape du voyage débloque une nouvelle partie de l'Angleterre, et chaque séance rapporte un autocollant à collectionner dans un passeport.
 
-**Statut** : 🚧 en conception. Projet IUT (BUT MMI, Le Puy) réalisé en une semaine pour un vrai client.
+**Statut** : 🚧 en conception. Projet Universitaire (BUT MMI, Le Puy) réalisé pour un vrai client.
 
 ---
 
@@ -76,17 +76,6 @@ Un écureuil roux sert de compagnon. Il dit les mots, l'enfant les répète, et 
 - **Voix d'enfant** : la reconnaissance vocale est moins fiable avec les enfants. Elle est à tester tôt, avec une notation tolérante.
 - **Coûts** : les audios fixes sont générés une seule fois pour limiter les appels d'API.
 
-## 📂 Le dépôt
-
-```
-├── Docs/
-│   ├── context.md        # Le cahier des charges complet
-│   ├── idées/            # Les pistes et propositions
-│   └── ADR/              # Les décisions d'architecture validées
-├── .claude/              # La configuration de l'assistant IA
-└── CLAUDE.md             # Les règles de travail avec l'assistant
-```
-
 ---
 
-<sub>Projet réalisé dans le cadre du BUT MMI à l'IUT du Puy-en-Velay.</sub>
+<sub>Projet réalisé par BONNE Morgan dans le cadre du BUT MMI à l'IUT du Puy-en-Velay.</sub>
