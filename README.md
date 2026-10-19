@@ -58,7 +58,7 @@ Un écureuil roux sert de compagnon. Il dit les mots, l'enfant les répète, et 
 
 ## ▶️ Lancer l'appli
 
-L'appli est dans le dossier [app/](app/) (Expo SDK 58).
+L'appli est dans le dossier [app/](app/) (Expo SDK 57, compatible avec Expo Go du Play Store).
 
 ```bash
 cd app

@@ -28,7 +28,8 @@
           "microphonePermission": "Le micro sert à écouter ta prononciation. Rien n’est enregistré.",
           "speechRecognitionPermission": "La reconnaissance vocale sert à vérifier ta prononciation."
         }
-      ]
+      ],
+      "expo-status-bar"
     ]
   }
 }
