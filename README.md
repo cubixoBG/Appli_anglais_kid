@@ -56,6 +56,19 @@ Un écureuil roux sert de compagnon. Il dit les mots, l'enfant les répète, et 
 - [ ] Deux jeux : **Memory sonore** et **Le perroquet**
 - [ ] Un autocollant par séance, à coller dans le passeport
 
+## ▶️ Lancer l'appli
+
+L'appli est dans le dossier [app/](app/) (Expo SDK 58).
+
+```bash
+cd app
+npm install
+npx expo start      # scanner le QR code avec l'appli Expo Go
+npm test            # tests de la notation de prononciation
+```
+
+> Dans **Expo Go**, la reconnaissance vocale n'est pas disponible : le bouton micro devient « J'ai répété ! ». Pour la vraie correction de prononciation, il faut un build de développement (`npx expo run:android`, ou `npx eas-cli@latest build --profile development`).
+
 ## 🛠️ Stack envisagée
 
 > Ce sont des pistes, pas encore des décisions : voir [Docs/idées/idees-techno.md](Docs/idées/idees-techno.md).

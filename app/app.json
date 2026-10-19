@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "Mon voyage en Angleterre",
+    "slug": "mon-voyage-en-angleterre",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Le micro sert à écouter ta prononciation. Rien n’est enregistré.",
+          "speechRecognitionPermission": "La reconnaissance vocale sert à vérifier ta prononciation."
+        }
+      ]
+    ]
+  }
+}
