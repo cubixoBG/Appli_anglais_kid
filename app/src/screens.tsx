@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, Text, useWindowDimensions, View } from 'react-native';
 import { pick, PRESENTATIONS, STICKERS, Word } from './data';
 import { RepeatCard } from './RepeatCard';
 import { say } from './speech';
@@ -175,6 +175,9 @@ export function Memory({ onFinish, onBack }: { onFinish: () => void; onBack: () 
   const [found, setFound] = useState<Set<string>>(new Set());
   const busy = useRef(false);
   const won = found.size === cards.length / 2;
+  // Les 4 rangées de cartes tiennent dans la hauteur de l'écran (en-tête, bulle et marges déduites).
+  const { height } = useWindowDimensions();
+  const cardH = Math.max(84, Math.min(170, (height - 330) / 4));
 
   useEffect(() => {
     if (won) say('Well done! You found them all!');
@@ -202,33 +205,37 @@ export function Memory({ onFinish, onBack }: { onFinish: () => void; onBack: () 
 
   return (
     <Screen onBack={onBack} title="Memory sonore">
-      <Squirrel en="Find the pairs!" fr="Trouve les paires : une image et son mot !" />
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 18 }}>
+      {won ? (
+        <Button big label="Bravo ! Terminer  ✓" variant="red" onPress={onFinish} />
+      ) : (
+        <Squirrel en="Find the pairs!" fr="Trouve les paires : une image et son mot !" />
+      )}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 14 }}>
         {cards.map((c, i) => {
           const done = found.has(c.word.en);
           const shown = done || open.includes(i);
           return (
             <Pressable key={c.key} onPress={() => flip(i)} accessibilityRole="button"
-              accessibilityLabel={shown ? c.word.en : 'Carte cachée'} style={{ width: '47%', aspectRatio: 1.15 }}>
+              accessibilityLabel={shown ? c.word.en : 'Carte cachée'} style={{ width: '47%', height: cardH }}>
               <View style={[s.shadow, { borderRadius: 20 }]} />
               <View style={{
                 flex: 1, borderRadius: 20, borderWidth: 2.5, borderColor: C.ink, alignItems: 'center', justifyContent: 'center',
-                backgroundColor: shown ? C.card : C.ink, gap: 6,
+                backgroundColor: shown ? C.card : C.ink, gap: 2,
               }}>
                 {shown ? (
                   <>
-                    <Text style={{ fontSize: 56 }}>{c.kind === 'image' ? c.word.emoji : '🔊'}</Text>
+                    <Text style={{ fontSize: cardH * 0.36 }}>{c.kind === 'image' ? c.word.emoji : '🔊'}</Text>
                     {done || c.kind === 'sound' ? (
-                      <Text style={{ fontFamily: F.bold, fontSize: 18, color: C.ink, textAlign: 'center' }}>{c.word.en}</Text>
+                      <Text style={{ fontFamily: F.bold, fontSize: cardH < 120 ? 14 : 17, color: C.ink, textAlign: 'center' }}>{c.word.en}</Text>
                     ) : null}
                   </>
                 ) : (
                   // Dos de carte : cadre intérieur crème, comme un timbre
                   <View style={{
-                    position: 'absolute', top: 10, left: 10, right: 10, bottom: 10, borderRadius: 12,
+                    position: 'absolute', top: 8, left: 8, right: 8, bottom: 8, borderRadius: 12,
                     borderWidth: 2, borderStyle: 'dashed', borderColor: C.paper, alignItems: 'center', justifyContent: 'center',
                   }}>
-                    <Text style={{ fontSize: 44 }}>🐿️</Text>
+                    <Text style={{ fontSize: cardH * 0.28 }}>🐿️</Text>
                   </View>
                 )}
                 {done ? <Stamp label="✓" style={{ top: 8, right: 8 }} /> : null}
@@ -237,7 +244,6 @@ export function Memory({ onFinish, onBack }: { onFinish: () => void; onBack: () 
           );
         })}
       </View>
-      {won ? <Button big label="Bravo ! Terminer  ✓" variant="red" onPress={onFinish} /> : null}
     </Screen>
   );
 }
