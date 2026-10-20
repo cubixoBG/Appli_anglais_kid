@@ -1,3 +1,4 @@
+import { Lexend_400Regular, Lexend_600SemiBold, Lexend_800ExtraBold, useFonts } from '@expo-google-fonts/lexend';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { BackHandler } from 'react-native';
@@ -12,6 +13,7 @@ export default function App() {
   const [page, setPage] = useState<Page>('home');
   const [done, setDone] = useState<Set<Activity>>(new Set());
   const [stickers, setStickers] = useState(0);
+  const [fontsLoaded, fontError] = useFonts({ Lexend_400Regular, Lexend_600SemiBold, Lexend_800ExtraBold });
 
   useEffect(() => {
     loadStickers().then(setStickers);
@@ -42,6 +44,8 @@ export default function App() {
   }
 
   const home = () => setPage('home');
+  // Si la police ne charge pas, on affiche quand même l'appli avec la police système.
+  if (!fontsLoaded && !fontError) return null;
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />

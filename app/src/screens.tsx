@@ -3,20 +3,88 @@ import { Pressable, Text, View } from 'react-native';
 import { pick, PRESENTATIONS, STICKERS, Word } from './data';
 import { RepeatCard } from './RepeatCard';
 import { say } from './speech';
-import { Button, C, s, Screen, Squirrel } from './ui';
+import { Button, C, Card, F, s, Screen, Squirrel, Stamp } from './ui';
 
 export type Activity = 'learn' | 'memory' | 'parrot';
 
 const STEPS = [
-  '👋 Les présentations', '✈️ L’aéroport', '🏠 La famille', '🍽️ À table', '⏰ La journée',
-  '🛍️ Sortir', '⚽ Jouer', '🆘 Les urgences', '☕ La culture',
+  'Les présentations', 'L’aéroport', 'La famille', 'À table', 'La journée',
+  'Sortir', 'Jouer', 'Les urgences', 'La culture',
 ];
 
-const ACTIVITIES: { id: Activity; label: string; color: string }[] = [
-  { id: 'learn', label: '🎧 Écouter et répéter', color: C.red },
-  { id: 'memory', label: '🃏 Memory sonore', color: C.blue },
-  { id: 'parrot', label: '🦜 Le perroquet', color: C.green },
+const ACTIVITIES: { id: Activity; icon: string; label: string; sub: string }[] = [
+  { id: 'learn', icon: '🎧', label: 'Écouter et répéter', sub: 'Listen and repeat' },
+  { id: 'memory', icon: '🃏', label: 'Memory sonore', sub: 'Trouve les paires' },
+  { id: 'parrot', icon: '🦜', label: 'Le perroquet', sub: 'Répète ce que tu entends' },
 ];
+
+// Petites inclinaisons fixes pour l'effet « collé à la main »
+const TILTS = [-4, 3, -2, 5, -5, 2, 4, -3, 1, -4, 3, -1];
+
+// Un billet de la séance : talon avec l'icône, pointillés, puis le nom. Tamponné quand c'est fait.
+function Ticket({ icon, label, sub, done, onPress }: {
+  icon: string; label: string; sub: string; done: boolean; onPress: () => void;
+}) {
+  return (
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${label}${done ? ', fait' : ''}`}>
+      {({ pressed }) => (
+        <Card style={{ opacity: pressed ? 0.85 : 1 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'stretch', marginVertical: -6 }}>
+            <Text style={{ fontSize: 40, width: 56, textAlign: 'center' }}>{icon}</Text>
+            <View style={{ alignSelf: 'stretch', borderLeftWidth: 2.5, borderStyle: 'dashed', borderColor: C.line, marginHorizontal: 16 }} />
+            <View style={{ flex: 1, paddingVertical: 4 }}>
+              <Text style={{ fontFamily: F.bold, fontSize: 20, color: C.ink }}>{label}</Text>
+              <Text style={{ fontFamily: F.regular, fontSize: 15, color: C.soft }}>{sub}</Text>
+            </View>
+            <Text style={{ fontFamily: F.bold, fontSize: 24, color: C.ink }}>→</Text>
+          </View>
+          {done ? <Stamp label="FAIT ✓" style={{ right: 36, top: 14 }} /> : null}
+        </Card>
+      )}
+    </Pressable>
+  );
+}
+
+// Le voyage façon plan du métro de Londres : une ligne, une station par étape.
+function TubeMap() {
+  return (
+    <Card>
+      <View style={{ alignSelf: 'stretch' }}>
+      <Text style={[s.label, { marginBottom: 8 }]}>Ligne du voyage</Text>
+      {STEPS.map((step, i) => {
+        const here = i === 0;
+        return (
+          <View key={step} style={{ flexDirection: 'row', alignItems: 'center', height: 40 }}>
+            <View style={{ width: 32, alignItems: 'center', alignSelf: 'stretch', justifyContent: 'center' }}>
+              <View style={{
+                position: 'absolute', width: 8, backgroundColor: here ? C.red : C.line,
+                top: i === 0 ? 20 : 0, bottom: i === STEPS.length - 1 ? 20 : 0,
+              }} />
+              <View style={{
+                width: here ? 24 : 16, height: here ? 24 : 16, borderRadius: 12, backgroundColor: C.card,
+                borderWidth: here ? 5 : 3, borderColor: here ? C.ink : C.line,
+              }} />
+            </View>
+            <Text style={{
+              marginLeft: 12, flex: 1, fontSize: here ? 18 : 16,
+              fontFamily: here ? F.bold : F.regular, color: here ? C.ink : C.soft,
+            }}>
+              {step}
+            </Text>
+            {here ? (
+              <View style={{ backgroundColor: C.red, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2 }}>
+                <Text style={{ color: C.card, fontFamily: F.semi, fontSize: 13 }}>Tu es ici</Text>
+              </View>
+            ) : (
+              <Text style={{ fontSize: 14, opacity: 0.5 }}>🔒</Text>
+            )}
+          </View>
+        );
+      })}
+      </View>
+    </Card>
+  );
+}
 
 export function Home({ done, onOpen, onPassport }: {
   done: Set<Activity>; onOpen: (a: Activity) => void; onPassport: () => void;
@@ -27,30 +95,20 @@ export function Home({ done, onOpen, onPassport }: {
 
   return (
     <Screen>
+      <Text style={[s.label, { marginTop: 8 }]}>Mon carnet de voyage</Text>
       <Squirrel big en="Hello! Ready for your lesson?" fr="Coucou ! Prête pour ta séance ?" />
 
-      <View style={s.card}>
-        <Text style={s.muted}>Mon voyage en Angleterre</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
-          {STEPS.map((step, i) => (
-            <View key={step} style={{
-              paddingVertical: 8, paddingHorizontal: 12, borderRadius: 16,
-              backgroundColor: i === 0 ? C.orange : C.line,
-            }}>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: i === 0 ? '#FFFFFF' : C.soft }}>
-                {i === 0 ? step : `🔒 ${i + 1}`}
-              </Text>
-            </View>
-          ))}
-        </View>
+      <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', marginTop: 8 }}>
+        <Text style={{ fontFamily: F.bold, fontSize: 24, color: C.ink }}>Séance du jour</Text>
+        <Text style={{ fontFamily: F.semi, fontSize: 16, color: C.red }}>{done.size}/3 billets</Text>
       </View>
-
-      <Text style={s.text}>Ma séance du jour : fais les 3 activités pour gagner un autocollant !</Text>
+      <Text style={[s.muted, { textAlign: 'left', marginTop: -12 }]}>Fais les 3 pour gagner un autocollant !</Text>
       {ACTIVITIES.map((a) => (
-        <Button key={a.id} big color={a.color} onPress={() => onOpen(a.id)}
-          label={`${done.has(a.id) ? '✅ ' : ''}${a.label}`} />
+        <Ticket key={a.id} {...a} done={done.has(a.id)} onPress={() => onOpen(a.id)} />
       ))}
-      <Button label="🛂 Mon passeport" color={C.orange} onPress={onPassport} />
+
+      <TubeMap />
+      <Button label="🛂  Mon passeport" variant="red" onPress={onPassport} />
     </Screen>
   );
 }
@@ -80,13 +138,19 @@ export function Parrot({ onFinish, onBack }: { onFinish: () => void; onBack: () 
     return (
       <Screen onBack={onBack} title="Le perroquet">
         <Squirrel big en="Fantastic parrot!" fr="Quel super perroquet !" />
-        <Text style={{ fontSize: 56, textAlign: 'center' }}>{'⭐'.repeat(Math.max(1, stars))}</Text>
-        <Button big label="Terminer ✅" color={C.green} onPress={onFinish} />
+        <Card tilt={2}>
+          <Text style={{ fontSize: 72 }}>🦜</Text>
+          <Text style={{ fontSize: 40, letterSpacing: 6 }}>
+            {words.map((_, n) => (n < Math.max(1, stars) ? '★' : '☆')).join('')}
+          </Text>
+          <Text style={s.muted}>{Math.max(1, stars)} étoile{stars > 1 ? 's' : ''} sur {words.length}</Text>
+        </Card>
+        <Button big label="Terminer  ✓" variant="red" onPress={onFinish} />
       </Screen>
     );
   }
   return (
-    <Screen onBack={onBack} title={`🦜 Le perroquet · ${i + 1}/${words.length}`}>
+    <Screen onBack={onBack} title={`Le perroquet · ${i + 1}/${words.length}`}>
       <RepeatCard word={words[i]} showText={false} onNext={(g) => {
         if (g === 'great') setStars((n) => n + 1);
         setI(i + 1);
@@ -95,11 +159,11 @@ export function Parrot({ onFinish, onBack }: { onFinish: () => void; onBack: () 
   );
 }
 
-type Card = { key: string; word: Word; kind: 'image' | 'sound' };
+type MemoryCard = { key: string; word: Word; kind: 'image' | 'sound' };
 
 // Memory sonore : associer l'image et le mot entendu.
 export function Memory({ onFinish, onBack }: { onFinish: () => void; onBack: () => void }) {
-  const cards = useMemo<Card[]>(() => {
+  const cards = useMemo<MemoryCard[]>(() => {
     const words = pick(PRESENTATIONS, 4);
     const all = words.flatMap((w) => [
       { key: `${w.en}-i`, word: w, kind: 'image' as const },
@@ -137,33 +201,43 @@ export function Memory({ onFinish, onBack }: { onFinish: () => void; onBack: () 
   }
 
   return (
-    <Screen onBack={onBack} title="🃏 Memory sonore">
+    <Screen onBack={onBack} title="Memory sonore">
       <Squirrel en="Find the pairs!" fr="Trouve les paires : une image et son mot !" />
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'center' }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 18 }}>
         {cards.map((c, i) => {
           const done = found.has(c.word.en);
           const shown = done || open.includes(i);
           return (
             <Pressable key={c.key} onPress={() => flip(i)} accessibilityRole="button"
-              accessibilityLabel={shown ? c.word.en : 'Carte cachée'}
-              style={{
-                width: '46%', aspectRatio: 1, borderRadius: 24, alignItems: 'center', justifyContent: 'center',
-                backgroundColor: done ? '#D8F0DE' : shown ? C.card : C.blue, borderWidth: 3,
-                borderColor: done ? C.green : C.line,
+              accessibilityLabel={shown ? c.word.en : 'Carte cachée'} style={{ width: '47%', aspectRatio: 1.15 }}>
+              <View style={[s.shadow, { borderRadius: 20 }]} />
+              <View style={{
+                flex: 1, borderRadius: 20, borderWidth: 2.5, borderColor: C.ink, alignItems: 'center', justifyContent: 'center',
+                backgroundColor: shown ? C.card : C.ink, gap: 6,
               }}>
-              {shown ? (
-                <>
-                  <Text style={{ fontSize: 64 }}>{c.kind === 'image' ? c.word.emoji : '🔊'}</Text>
-                  {done || c.kind === 'sound' ? <Text style={[s.text, { fontWeight: '700' }]}>{c.word.en}</Text> : null}
-                </>
-              ) : (
-                <Text style={{ fontSize: 56 }}>🐿️</Text>
-              )}
+                {shown ? (
+                  <>
+                    <Text style={{ fontSize: 56 }}>{c.kind === 'image' ? c.word.emoji : '🔊'}</Text>
+                    {done || c.kind === 'sound' ? (
+                      <Text style={{ fontFamily: F.bold, fontSize: 18, color: C.ink, textAlign: 'center' }}>{c.word.en}</Text>
+                    ) : null}
+                  </>
+                ) : (
+                  // Dos de carte : cadre intérieur crème, comme un timbre
+                  <View style={{
+                    position: 'absolute', top: 10, left: 10, right: 10, bottom: 10, borderRadius: 12,
+                    borderWidth: 2, borderStyle: 'dashed', borderColor: C.paper, alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <Text style={{ fontSize: 44 }}>🐿️</Text>
+                  </View>
+                )}
+                {done ? <Stamp label="✓" style={{ top: 8, right: 8 }} /> : null}
+              </View>
             </Pressable>
           );
         })}
       </View>
-      {won ? <Button big label="Bravo ! Terminer ✅" color={C.green} onPress={onFinish} /> : null}
+      {won ? <Button big label="Bravo ! Terminer  ✓" variant="red" onPress={onFinish} /> : null}
     </Screen>
   );
 }
@@ -176,31 +250,58 @@ export function StickerWon({ count, onContinue }: { count: number; onContinue: (
   return (
     <Screen>
       <Squirrel big en="Amazing! You won a sticker!" fr="Génial ! Tu as gagné un autocollant !" />
-      <View style={s.card}>
-        <Text style={{ fontSize: 140 }}>{sticker.emoji}</Text>
-        <Text style={s.big}>{sticker.name}</Text>
+      <View style={{ alignItems: 'center', marginVertical: 16 }}>
+        <View style={{ transform: [{ rotate: '-6deg' }] }}>
+          <View style={[s.shadow, { borderRadius: 120 }]} />
+          <View style={{
+            width: 220, height: 220, borderRadius: 110, backgroundColor: C.card, borderWidth: 3, borderColor: C.ink,
+            alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Text style={{ fontSize: 120 }}>{sticker.emoji}</Text>
+          </View>
+          <Stamp label="NEW!" style={{ top: 4, right: -8 }} />
+        </View>
       </View>
-      <Button big label="🛂 Le coller dans mon passeport" color={C.orange} onPress={onContinue} />
+      <Text style={s.big}>{sticker.name}</Text>
+      <Button big label="🛂  Le coller dans mon passeport" variant="red" onPress={onContinue} />
     </Screen>
   );
 }
 
 export function Passport({ count, onBack }: { count: number; onBack: () => void }) {
   return (
-    <Screen onBack={onBack} title="🛂 Mon passeport">
+    <Screen onBack={onBack}>
+      {/* Couverture du passeport */}
+      <Card bg={C.ink}>
+        <Text style={{ fontSize: 44 }}>🦁</Text>
+        <Text style={{ fontFamily: F.bold, fontSize: 26, color: C.paper, letterSpacing: 4 }}>PASSPORT</Text>
+        <Text style={{ fontFamily: F.regular, fontSize: 14, color: C.paper, opacity: 0.8, letterSpacing: 2 }}>
+          MON VOYAGE EN ANGLETERRE
+        </Text>
+      </Card>
+
       <Text style={s.text}>
-        {count === 0 ? 'Termine ta première séance pour gagner un autocollant !' : `${count} autocollant${count > 1 ? 's' : ''} gagné${count > 1 ? 's' : ''} !`}
+        {count === 0
+          ? 'Termine ta première séance pour gagner un autocollant !'
+          : `${Math.min(count, STICKERS.length)} autocollant${count > 1 ? 's' : ''} sur ${STICKERS.length}`}
       </Text>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'center' }}>
+
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 20 }}>
         {STICKERS.map((st, i) => {
           const got = i < count;
           return (
-            <View key={st.name} accessibilityLabel={got ? st.name : 'Autocollant à gagner'} style={{
-              width: '30%', aspectRatio: 1, borderRadius: 20, alignItems: 'center', justifyContent: 'center',
-              backgroundColor: got ? C.card : 'transparent', borderWidth: 3, borderStyle: got ? 'solid' : 'dashed',
-              borderColor: got ? C.orange : C.line,
-            }}>
-              <Text style={{ fontSize: 48, opacity: got ? 1 : 0.25 }}>{got ? st.emoji : '?'}</Text>
+            <View key={st.name} accessibilityLabel={got ? st.name : 'Autocollant à gagner'}
+              style={{ width: '30%', alignItems: 'center', gap: 6 }}>
+              <View style={{
+                width: '100%', aspectRatio: 1, borderRadius: 999, alignItems: 'center', justifyContent: 'center',
+                borderWidth: got ? 3 : 2.5, borderStyle: got ? 'solid' : 'dashed', borderColor: got ? C.ink : C.line,
+                backgroundColor: got ? C.card : 'transparent', transform: [{ rotate: `${got ? TILTS[i] : 0}deg` }],
+              }}>
+                <Text style={{ fontSize: 44, opacity: got ? 1 : 0.2 }}>{got ? st.emoji : '?'}</Text>
+              </View>
+              <Text numberOfLines={2} style={{ fontFamily: F.regular, fontSize: 12, color: got ? C.ink : C.soft, textAlign: 'center' }}>
+                {got ? st.name : '…'}
+              </Text>
             </View>
           );
         })}

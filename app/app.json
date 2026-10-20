@@ -29,7 +29,8 @@
           "speechRecognitionPermission": "La reconnaissance vocale sert à vérifier ta prononciation."
         }
       ],
-      "expo-status-bar"
+      "expo-status-bar",
+      "expo-font"
     ]
   }
 }
