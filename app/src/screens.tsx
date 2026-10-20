@@ -1,21 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, useWindowDimensions, View } from 'react-native';
-import { pick, PRESENTATIONS, STICKERS, Word } from './data';
+import { currentStep, pick, SESSIONS_PER_STEP, STEPS, STICKERS, Word } from './data';
 import { RepeatCard } from './RepeatCard';
 import { say } from './speech';
 import { Button, C, Card, F, s, Screen, Squirrel, Stamp, Text } from './ui';
 
 export type Activity = 'learn' | 'memory' | 'parrot';
 
-const STEPS = [
-  'Les présentations', 'L’aéroport', 'La famille', 'À table', 'La journée',
-  'Sortir', 'Jouer', 'Les urgences', 'La culture',
-];
-
 const ACTIVITIES: { id: Activity; icon: string; label: string; sub: string }[] = [
-  { id: 'learn', icon: '🎧', label: 'Écouter et répéter', sub: 'Listen and repeat' },
-  { id: 'memory', icon: '🃏', label: 'Memory sonore', sub: 'Trouve les paires' },
-  { id: 'parrot', icon: '🦜', label: 'Le perroquet', sub: 'Répète ce que tu entends' },
+  { id: 'learn', icon: '🎧', label: 'Listen and repeat', sub: 'Écouter et répéter' },
+  { id: 'memory', icon: '🃏', label: 'Find the pairs', sub: 'Trouve les paires' },
+  { id: 'parrot', icon: '🦜', label: 'The parrot', sub: 'Répète ce que tu entends' },
 ];
 
 // Petites inclinaisons fixes pour l'effet « collé à la main »
@@ -46,48 +41,57 @@ function Ticket({ icon, label, sub, done, onPress }: {
 }
 
 // Le voyage façon plan du métro de Londres : une ligne, une station par étape.
-function TubeMap() {
+// Stations passées en marine, station actuelle en rouge avec sa progression, les suivantes verrouillées.
+function TubeMap({ stickers }: { stickers: number }) {
+  const current = currentStep(stickers);
+  const progress = Math.min(stickers - current * SESSIONS_PER_STEP, SESSIONS_PER_STEP);
   return (
     <Card>
       <View style={{ alignSelf: 'stretch' }}>
-      <Text style={[s.label, { marginBottom: 8 }]}>Ligne du voyage</Text>
-      {STEPS.map((step, i) => {
-        const here = i === 0;
-        return (
-          <View key={step} style={{ flexDirection: 'row', alignItems: 'center', height: 40 }}>
-            <View style={{ width: 32, alignItems: 'center', alignSelf: 'stretch', justifyContent: 'center' }}>
-              <View style={{
-                position: 'absolute', width: 8, backgroundColor: here ? C.red : C.line,
-                top: i === 0 ? 20 : 0, bottom: i === STEPS.length - 1 ? 20 : 0,
-              }} />
-              <View style={{
-                width: here ? 24 : 16, height: here ? 24 : 16, borderRadius: 12, backgroundColor: C.card,
-                borderWidth: here ? 5 : 3, borderColor: here ? C.ink : C.line,
-              }} />
-            </View>
-            <Text style={{
-              marginLeft: 12, flex: 1, fontSize: here ? 17 : 16,
-              fontFamily: here ? F.bold : F.regular, color: here ? C.ink : C.soft,
-            }}>
-              {step}
-            </Text>
-            {here ? (
-              <View style={{ backgroundColor: C.red, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, flexShrink: 0 }}>
-                <Text style={{ color: C.card, fontFamily: F.semi, fontSize: 13 }}>Tu es ici</Text>
+        <Text style={[s.label, { marginBottom: 8 }]}>Ligne du voyage</Text>
+        {STEPS.map((step, i) => {
+          const here = i === current;
+          const passed = i < current;
+          return (
+            <View key={step.name} style={{ flexDirection: 'row', alignItems: 'center', height: 40 }}>
+              <View style={{ width: 32, alignItems: 'center', alignSelf: 'stretch', justifyContent: 'center' }}>
+                <View style={{
+                  position: 'absolute', width: 8, backgroundColor: passed ? C.ink : here ? C.red : C.line,
+                  top: i === 0 ? 20 : 0, bottom: i === STEPS.length - 1 ? 20 : 0,
+                }} />
+                <View style={{
+                  width: here ? 24 : 16, height: here ? 24 : 16, borderRadius: 12,
+                  backgroundColor: passed ? C.ink : C.card,
+                  borderWidth: here ? 5 : 3, borderColor: here || passed ? C.ink : C.line,
+                }} />
               </View>
-            ) : (
-              <Text style={{ fontSize: 14, opacity: 0.5 }}>🔒</Text>
-            )}
-          </View>
-        );
-      })}
+              <Text style={{
+                marginLeft: 12, flex: 1, fontSize: here ? 17 : 16,
+                fontFamily: here ? F.bold : F.regular, color: here || passed ? C.ink : C.soft,
+              }}>
+                {step.name}
+              </Text>
+              {here ? (
+                <View style={{ backgroundColor: C.red, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, flexShrink: 0 }}>
+                  <Text style={{ color: C.card, fontFamily: F.semi, fontSize: 13 }}>
+                    Tu es ici · {progress}/{SESSIONS_PER_STEP}
+                  </Text>
+                </View>
+              ) : passed ? (
+                <Text style={{ fontSize: 16, color: C.ink, fontFamily: F.bold }}>✓</Text>
+              ) : (
+                <Text style={{ fontSize: 14, opacity: 0.5 }}>🔒</Text>
+              )}
+            </View>
+          );
+        })}
       </View>
     </Card>
   );
 }
 
-export function Home({ done, onOpen, onPassport }: {
-  done: Set<Activity>; onOpen: (a: Activity) => void; onPassport: () => void;
+export function Home({ done, stickers, onOpen, onPassport }: {
+  done: Set<Activity>; stickers: number; onOpen: (a: Activity) => void; onPassport: () => void;
 }) {
   useEffect(() => {
     say('Hello! Are you ready for your English lesson?');
@@ -107,14 +111,16 @@ export function Home({ done, onOpen, onPassport }: {
         <Ticket key={a.id} {...a} done={done.has(a.id)} onPress={() => onOpen(a.id)} />
       ))}
 
-      <TubeMap />
+      <TubeMap stickers={stickers} />
       <Button label="🛂  Mon passeport" variant="red" onPress={onPassport} />
     </Screen>
   );
 }
 
-export function Learn({ onFinish, onBack }: { onFinish: () => void; onBack: () => void }) {
-  const words = useMemo(() => pick(PRESENTATIONS, 6), []);
+type GameProps = { words: Word[]; onFinish: () => void; onBack: () => void };
+
+export function Learn({ words: stepWords, onFinish, onBack }: GameProps) {
+  const words = useMemo(() => pick(stepWords, 6), [stepWords]);
   const [i, setI] = useState(0);
   return (
     <Screen onBack={onBack} title={`Écouter et répéter · ${i + 1}/${words.length}`}>
@@ -124,8 +130,8 @@ export function Learn({ onFinish, onBack }: { onFinish: () => void; onBack: () =
 }
 
 // Le perroquet : on n'affiche que l'image, l'enfant répète ce qu'il entend.
-export function Parrot({ onFinish, onBack }: { onFinish: () => void; onBack: () => void }) {
-  const words = useMemo(() => pick(PRESENTATIONS, 5), []);
+export function Parrot({ words: stepWords, onFinish, onBack }: GameProps) {
+  const words = useMemo(() => pick(stepWords, 5), [stepWords]);
   const [i, setI] = useState(0);
   const [stars, setStars] = useState(0);
   const finished = i >= words.length;
@@ -162,15 +168,15 @@ export function Parrot({ onFinish, onBack }: { onFinish: () => void; onBack: () 
 type MemoryCard = { key: string; word: Word; kind: 'image' | 'sound' };
 
 // Memory sonore : associer l'image et le mot entendu.
-export function Memory({ onFinish, onBack }: { onFinish: () => void; onBack: () => void }) {
+export function Memory({ words: stepWords, onFinish, onBack }: GameProps) {
   const cards = useMemo<MemoryCard[]>(() => {
-    const words = pick(PRESENTATIONS, 4);
+    const words = pick(stepWords, 4);
     const all = words.flatMap((w) => [
       { key: `${w.en}-i`, word: w, kind: 'image' as const },
       { key: `${w.en}-s`, word: w, kind: 'sound' as const },
     ]);
     return pick(all, all.length);
-  }, []);
+  }, [stepWords]);
   const [open, setOpen] = useState<number[]>([]);
   const [found, setFound] = useState<Set<string>>(new Set());
   const busy = useRef(false);
@@ -250,12 +256,21 @@ export function Memory({ onFinish, onBack }: { onFinish: () => void; onBack: () 
 
 export function StickerWon({ count, onContinue }: { count: number; onContinue: () => void }) {
   const sticker = STICKERS[(count - 1) % STICKERS.length];
+  // Cet autocollant fait-il avancer la ligne du voyage ?
+  const step = currentStep(count);
+  const unlocked = step > currentStep(count - 1) ? STEPS[step].name : null;
   useEffect(() => {
-    say('Amazing! You won a sticker!');
-  }, []);
+    say(unlocked ? 'Amazing! You won a sticker! And a new step of your trip!' : 'Amazing! You won a sticker!');
+  }, [unlocked]);
   return (
     <Screen>
       <Squirrel big en="Amazing! You won a sticker!" fr="Génial ! Tu as gagné un autocollant !" />
+      {unlocked ? (
+        <Card bg={C.ink} tilt={1}>
+          <Text style={[s.label, { color: C.paper }]}>Nouvelle étape débloquée</Text>
+          <Text style={{ fontFamily: F.bold, fontSize: 26, color: C.paper, textAlign: 'center' }}>🚉  {unlocked}</Text>
+        </Card>
+      ) : null}
       <View style={{ alignItems: 'center', marginVertical: 16 }}>
         <View style={{ transform: [{ rotate: '-6deg' }] }}>
           <View style={[s.shadow, { borderRadius: 120 }]} />

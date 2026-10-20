@@ -25,7 +25,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "node --no-warnings src/score.test.ts",
+    "test": "node --no-warnings src/score.test.ts && node --no-warnings src/data.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "private": true

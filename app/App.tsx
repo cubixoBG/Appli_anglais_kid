@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { BackHandler } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { currentStep, STEPS } from './src/data';
 import { loadStickers, saveStickers } from './src/passport';
 import { Activity, Home, Learn, Memory, Parrot, Passport, StickerWon } from './src/screens';
 
@@ -44,15 +45,17 @@ export default function App() {
   }
 
   const home = () => setPage('home');
+  // Les jeux piochent dans les mots de l'étape en cours du voyage.
+  const words = STEPS[currentStep(stickers)].words;
   // Si la police ne charge pas, on affiche quand même l'appli avec la police système.
   if (!fontsLoaded && !fontError) return null;
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />
-      {page === 'home' && <Home done={done} onOpen={setPage} onPassport={() => setPage('passport')} />}
-      {page === 'learn' && <Learn onFinish={() => finish('learn')} onBack={home} />}
-      {page === 'memory' && <Memory onFinish={() => finish('memory')} onBack={home} />}
-      {page === 'parrot' && <Parrot onFinish={() => finish('parrot')} onBack={home} />}
+      {page === 'home' && <Home done={done} stickers={stickers} onOpen={setPage} onPassport={() => setPage('passport')} />}
+      {page === 'learn' && <Learn words={words} onFinish={() => finish('learn')} onBack={home} />}
+      {page === 'memory' && <Memory words={words} onFinish={() => finish('memory')} onBack={home} />}
+      {page === 'parrot' && <Parrot words={words} onFinish={() => finish('parrot')} onBack={home} />}
       {page === 'sticker' && <StickerWon count={stickers} onContinue={() => setPage('passport')} />}
       {page === 'passport' && <Passport count={stickers} onBack={home} />}
     </SafeAreaProvider>
