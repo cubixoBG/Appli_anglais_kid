@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { ComponentProps, ReactNode } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text as RNText, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { say } from './speech';
 
@@ -18,6 +18,13 @@ export const F = {
   semi: 'Lexend_600SemiBold',
   bold: 'Lexend_800ExtraBold',
 };
+
+// À utiliser à la place du Text de React Native.
+// Sur Android, la césure « highQuality » mesure parfois le texte trop court et masque le dernier mot ;
+// on plafonne aussi l'agrandissement par la taille de police du système pour garder la mise en page.
+export function Text(props: ComponentProps<typeof RNText>) {
+  return <RNText textBreakStrategy="simple" maxFontSizeMultiplier={1.25} {...props} />;
+}
 
 const SHADOW = 5;
 
@@ -110,7 +117,7 @@ export const s = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   backText: { fontSize: 26, color: C.ink, fontFamily: F.bold, marginTop: -3 },
-  title: { fontSize: 22, color: C.ink, fontFamily: F.bold, flexShrink: 1 },
+  title: { fontSize: 20, color: C.ink, fontFamily: F.bold, flexShrink: 1 },
   content: { padding: 20, paddingBottom: 48, gap: 20, width: '100%', maxWidth: 640, alignSelf: 'center' },
 
   shadow: { position: 'absolute', top: SHADOW, left: SHADOW, right: -SHADOW, bottom: -SHADOW, backgroundColor: C.ink },
@@ -126,7 +133,7 @@ export const s = StyleSheet.create({
     position: 'absolute', left: -7, top: '50%', marginTop: -7, width: 16, height: 16, backgroundColor: C.card,
     borderLeftWidth: 2.5, borderBottomWidth: 2.5, borderColor: C.ink, transform: [{ rotate: '45deg' }], zIndex: 1,
   },
-  bubbleEn: { fontSize: 21, color: C.ink, fontFamily: F.bold },
+  bubbleEn: { fontSize: 19, color: C.ink, fontFamily: F.bold },
   bubbleFr: { fontSize: 16, color: C.soft, fontFamily: F.regular, marginTop: 2 },
 
   button: {
@@ -134,7 +141,7 @@ export const s = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center', minHeight: 60,
   },
   buttonBig: { borderRadius: 28, minHeight: 88 },
-  buttonText: { fontSize: 19, fontFamily: F.semi, textAlign: 'center' },
+  buttonText: { fontSize: 18, fontFamily: F.semi, textAlign: 'center' },
 
   stamp: {
     position: 'absolute', borderWidth: 3, borderColor: C.red, borderRadius: 10, paddingHorizontal: 10, paddingVertical: 2,

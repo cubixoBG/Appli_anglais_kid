@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, Text, useWindowDimensions, View } from 'react-native';
+import { Pressable, useWindowDimensions, View } from 'react-native';
 import { pick, PRESENTATIONS, STICKERS, Word } from './data';
 import { RepeatCard } from './RepeatCard';
 import { say } from './speech';
-import { Button, C, Card, F, s, Screen, Squirrel, Stamp } from './ui';
+import { Button, C, Card, F, s, Screen, Squirrel, Stamp, Text } from './ui';
 
 export type Activity = 'learn' | 'memory' | 'parrot';
 
@@ -33,7 +33,7 @@ function Ticket({ icon, label, sub, done, onPress }: {
             <Text style={{ fontSize: 40, width: 56, textAlign: 'center' }}>{icon}</Text>
             <View style={{ alignSelf: 'stretch', borderLeftWidth: 2.5, borderStyle: 'dashed', borderColor: C.line, marginHorizontal: 16 }} />
             <View style={{ flex: 1, paddingVertical: 4 }}>
-              <Text style={{ fontFamily: F.bold, fontSize: 20, color: C.ink }}>{label}</Text>
+              <Text style={{ fontFamily: F.bold, fontSize: 18, color: C.ink }}>{label}</Text>
               <Text style={{ fontFamily: F.regular, fontSize: 15, color: C.soft }}>{sub}</Text>
             </View>
             <Text style={{ fontFamily: F.bold, fontSize: 24, color: C.ink }}>→</Text>
@@ -66,13 +66,13 @@ function TubeMap() {
               }} />
             </View>
             <Text style={{
-              marginLeft: 12, flex: 1, fontSize: here ? 18 : 16,
+              marginLeft: 12, flex: 1, fontSize: here ? 17 : 16,
               fontFamily: here ? F.bold : F.regular, color: here ? C.ink : C.soft,
             }}>
               {step}
             </Text>
             {here ? (
-              <View style={{ backgroundColor: C.red, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2 }}>
+              <View style={{ backgroundColor: C.red, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, flexShrink: 0 }}>
                 <Text style={{ color: C.card, fontFamily: F.semi, fontSize: 13 }}>Tu es ici</Text>
               </View>
             ) : (
@@ -98,8 +98,8 @@ export function Home({ done, onOpen, onPassport }: {
       <Text style={[s.label, { marginTop: 8 }]}>Mon carnet de voyage</Text>
       <Squirrel big en="Hello! Ready for your lesson?" fr="Coucou ! Prête pour ta séance ?" />
 
-      <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', marginTop: 8 }}>
-        <Text style={{ fontFamily: F.bold, fontSize: 24, color: C.ink }}>Séance du jour</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', columnGap: 12, marginTop: 8 }}>
+        <Text style={{ fontFamily: F.bold, fontSize: 22, color: C.ink }}>Séance du jour</Text>
         <Text style={{ fontFamily: F.semi, fontSize: 16, color: C.red }}>{done.size}/3 billets</Text>
       </View>
       <Text style={[s.muted, { textAlign: 'left', marginTop: -12 }]}>Fais les 3 pour gagner un autocollant !</Text>

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Word } from './data';
 import { grade, Grade, hint } from './score';
 import { canListen, listen, say } from './speech';
-import { Button, C, Card, F, s, Squirrel } from './ui';
+import { Button, C, Card, F, s, Squirrel, Text } from './ui';
 
 const FEEDBACK: Record<Grade, { en: string; fr: string }> = {
   great: { en: 'Well done!', fr: 'Bravo, c’est super !' },
