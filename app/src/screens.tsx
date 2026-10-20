@@ -113,6 +113,8 @@ export function Home({ done, stickers, step, onSelectStep, onOpen, onPassport }:
   done: Set<Activity>; stickers: number; step: number; onSelectStep: (step: number) => void;
   onOpen: (a: Activity) => void; onPassport: () => void;
 }) {
+  // Une étape avant celle du voyage = révision : les billets de la séance du jour ne bougent pas.
+  const revising = step < currentStep(stickers);
   useEffect(() => {
     say('Hello! Are you ready for your English lesson?');
   }, []);
@@ -123,14 +125,16 @@ export function Home({ done, stickers, step, onSelectStep, onOpen, onPassport }:
       <Squirrel big en="Hello! Ready for your lesson?" fr="Coucou ! Prête pour ta séance ?" />
 
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', columnGap: 12, marginTop: 8 }}>
-        <Text style={{ fontFamily: F.bold, fontSize: 22, color: C.ink }}>Séance du jour</Text>
-        <Text style={{ fontFamily: F.semi, fontSize: 16, color: C.red }}>{done.size}/3 billets</Text>
+        <Text style={{ fontFamily: F.bold, fontSize: 22, color: C.ink }}>{revising ? 'Révision' : 'Séance du jour'}</Text>
+        {revising ? null : <Text style={{ fontFamily: F.semi, fontSize: 16, color: C.red }}>{done.size}/3 billets</Text>}
       </View>
       <Text style={[s.muted, { textAlign: 'left', marginTop: -12 }]}>
-        {STEPS[step].name} · fais les 3 pour gagner un autocollant !
+        {revising
+          ? `${STEPS[step].name} · pour t’entraîner, ça ne compte pas pour la séance du jour.`
+          : `${STEPS[step].name} · fais les 3 pour gagner un autocollant !`}
       </Text>
       {ACTIVITIES.map((a) => (
-        <Ticket key={a.id} {...a} done={done.has(a.id)} onPress={() => onOpen(a.id)} />
+        <Ticket key={a.id} {...a} done={!revising && done.has(a.id)} onPress={() => onOpen(a.id)} />
       ))}
 
       <TubeMap stickers={stickers} selected={step} onSelect={onSelectStep} />

@@ -32,6 +32,11 @@ export default function App() {
   }, [page]);
 
   function finish(a: Activity) {
+    // Révision d'une étape passée : on s'entraîne, mais ça ne valide rien (ni billet, ni autocollant).
+    if (chosen !== null) {
+      setPage('home');
+      return;
+    }
     const next = new Set(done).add(a);
     if (next.size === 3) {
       // Séance complète : un autocollant, puis une nouvelle séance commence.
