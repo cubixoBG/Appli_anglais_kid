@@ -42,18 +42,33 @@ function Ticket({ icon, label, sub, done, onPress }: {
 
 // Le voyage façon plan du métro de Londres : une ligne, une station par étape.
 // Stations passées en marine, station actuelle en rouge avec sa progression, les suivantes verrouillées.
-function TubeMap({ stickers }: { stickers: number }) {
+// Toucher une station débloquée choisit le thème des jeux (pour réviser une étape passée).
+function TubeMap({ stickers, selected, onSelect }: {
+  stickers: number; selected: number; onSelect: (step: number) => void;
+}) {
   const current = currentStep(stickers);
   const progress = Math.min(stickers - current * SESSIONS_PER_STEP, SESSIONS_PER_STEP);
   return (
     <Card>
       <View style={{ alignSelf: 'stretch' }}>
-        <Text style={[s.label, { marginBottom: 8 }]}>Ligne du voyage</Text>
+        <Text style={[s.label, { marginBottom: 4 }]}>Ligne du voyage</Text>
+        {current > 0 ? (
+          <Text style={[s.muted, { textAlign: 'left', fontSize: 14, marginBottom: 8 }]}>
+            Touche une étape passée pour la réviser.
+          </Text>
+        ) : null}
         {STEPS.map((step, i) => {
           const here = i === current;
           const passed = i < current;
+          const chosen = i === selected;
           return (
-            <View key={step.name} style={{ flexDirection: 'row', alignItems: 'center', height: 40 }}>
+            <Pressable key={step.name} disabled={i > current} onPress={() => onSelect(i)}
+              accessibilityRole="button" accessibilityState={{ selected: chosen, disabled: i > current }}
+              accessibilityLabel={`${step.name}${i > current ? ', verrouillée' : chosen ? ', choisie' : ''}`}
+              style={{
+                flexDirection: 'row', alignItems: 'center', height: 40, marginHorizontal: -8, paddingHorizontal: 8,
+                borderRadius: 12, backgroundColor: chosen && current > 0 ? C.paper : 'transparent',
+              }}>
               <View style={{ width: 32, alignItems: 'center', alignSelf: 'stretch', justifyContent: 'center' }}>
                 <View style={{
                   position: 'absolute', width: 8, backgroundColor: passed ? C.ink : here ? C.red : C.line,
@@ -66,12 +81,16 @@ function TubeMap({ stickers }: { stickers: number }) {
                 }} />
               </View>
               <Text style={{
-                marginLeft: 12, flex: 1, fontSize: here ? 17 : 16,
-                fontFamily: here ? F.bold : F.regular, color: here || passed ? C.ink : C.soft,
+                marginLeft: 12, flex: 1, fontSize: here || chosen ? 17 : 16,
+                fontFamily: here || chosen ? F.bold : F.regular, color: here || passed ? C.ink : C.soft,
               }}>
                 {step.name}
               </Text>
-              {here ? (
+              {chosen && passed ? (
+                <View style={{ backgroundColor: C.ink, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, flexShrink: 0 }}>
+                  <Text style={{ color: C.card, fontFamily: F.semi, fontSize: 13 }}>Je révise</Text>
+                </View>
+              ) : here ? (
                 <View style={{ backgroundColor: C.red, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, flexShrink: 0 }}>
                   <Text style={{ color: C.card, fontFamily: F.semi, fontSize: 13 }}>
                     Tu es ici · {progress}/{SESSIONS_PER_STEP}
@@ -82,7 +101,7 @@ function TubeMap({ stickers }: { stickers: number }) {
               ) : (
                 <Text style={{ fontSize: 14, opacity: 0.5 }}>🔒</Text>
               )}
-            </View>
+            </Pressable>
           );
         })}
       </View>
@@ -90,8 +109,9 @@ function TubeMap({ stickers }: { stickers: number }) {
   );
 }
 
-export function Home({ done, stickers, onOpen, onPassport }: {
-  done: Set<Activity>; stickers: number; onOpen: (a: Activity) => void; onPassport: () => void;
+export function Home({ done, stickers, step, onSelectStep, onOpen, onPassport }: {
+  done: Set<Activity>; stickers: number; step: number; onSelectStep: (step: number) => void;
+  onOpen: (a: Activity) => void; onPassport: () => void;
 }) {
   useEffect(() => {
     say('Hello! Are you ready for your English lesson?');
@@ -106,12 +126,14 @@ export function Home({ done, stickers, onOpen, onPassport }: {
         <Text style={{ fontFamily: F.bold, fontSize: 22, color: C.ink }}>Séance du jour</Text>
         <Text style={{ fontFamily: F.semi, fontSize: 16, color: C.red }}>{done.size}/3 billets</Text>
       </View>
-      <Text style={[s.muted, { textAlign: 'left', marginTop: -12 }]}>Fais les 3 pour gagner un autocollant !</Text>
+      <Text style={[s.muted, { textAlign: 'left', marginTop: -12 }]}>
+        {STEPS[step].name} · fais les 3 pour gagner un autocollant !
+      </Text>
       {ACTIVITIES.map((a) => (
         <Ticket key={a.id} {...a} done={done.has(a.id)} onPress={() => onOpen(a.id)} />
       ))}
 
-      <TubeMap stickers={stickers} />
+      <TubeMap stickers={stickers} selected={step} onSelect={onSelectStep} />
       <Button label="🛂  Mon passeport" variant="red" onPress={onPassport} />
     </Screen>
   );

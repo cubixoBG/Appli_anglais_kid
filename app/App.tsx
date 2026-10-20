@@ -14,6 +14,8 @@ export default function App() {
   const [page, setPage] = useState<Page>('home');
   const [done, setDone] = useState<Set<Activity>>(new Set());
   const [stickers, setStickers] = useState(0);
+  // Étape choisie sur la ligne pour réviser ; null = l'étape en cours du voyage.
+  const [chosen, setChosen] = useState<number | null>(null);
   const [fontsLoaded, fontError] = useFonts({ Lexend_400Regular, Lexend_600SemiBold, Lexend_800ExtraBold });
 
   useEffect(() => {
@@ -46,13 +48,15 @@ export default function App() {
 
   const home = () => setPage('home');
   // Les jeux piochent dans les mots de l'étape en cours du voyage.
-  const words = STEPS[currentStep(stickers)].words;
+  const step = chosen ?? currentStep(stickers);
+  const words = STEPS[step].words;
   // Si la police ne charge pas, on affiche quand même l'appli avec la police système.
   if (!fontsLoaded && !fontError) return null;
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />
-      {page === 'home' && <Home done={done} stickers={stickers} onOpen={setPage} onPassport={() => setPage('passport')} />}
+      {page === 'home' && <Home done={done} stickers={stickers} step={step}
+        onSelectStep={(i) => setChosen(i === currentStep(stickers) ? null : i)} onOpen={setPage} onPassport={() => setPage('passport')} />}
       {page === 'learn' && <Learn words={words} onFinish={() => finish('learn')} onBack={home} />}
       {page === 'memory' && <Memory words={words} onFinish={() => finish('memory')} onBack={home} />}
       {page === 'parrot' && <Parrot words={words} onFinish={() => finish('parrot')} onBack={home} />}
