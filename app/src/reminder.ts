@@ -36,7 +36,7 @@ export async function testNotification(): Promise<string> {
 }
 
 // Rappel local chaque jour : aucun serveur, aucune donnée ne quitte le téléphone.
-export async function scheduleDailyReminder(hour = 15, minute = 25) {
+export async function scheduleDailyReminder(name: string, hour = 15, minute = 45) {
   // La permission est demandée une fois ; le système retient la réponse.
   const { granted } = await Notifications.requestPermissionsAsync();
   if (!granted) {
@@ -50,8 +50,8 @@ export async function scheduleDailyReminder(hour = 15, minute = 25) {
   await Notifications.cancelAllScheduledNotificationsAsync();
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: '🐿️ Your English lesson is waiting!',
-      body: 'Ta séance du jour t’attend, 10 minutes pour gagner un autocollant !',
+      title: `🐿️ ${name}, ta séance t’attend !`,
+      body: '10 minutes pour gagner un nouvel autocollant !',
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.DAILY,

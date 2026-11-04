@@ -58,18 +58,19 @@ export function Screen({ children, onBack, title }: { children: ReactNode; onBac
   );
 }
 
-// L'écureuil parle en anglais, avec le sous-titre en français. Toucher la bulle la relit.
-export function Squirrel({ en, fr, big }: { en: string; fr: string; big?: boolean }) {
+// L'écureuil parle dans la langue apprise (t), avec le sous-titre en français. Toucher la bulle la relit.
+// Sans t, il ne dit que le texte en français (écran de bienvenue).
+export function Squirrel({ t, fr, big }: { t?: string; fr: string; big?: boolean }) {
   return (
-    <Pressable onPress={() => say(en)} style={s.squirrel} accessibilityRole="button" accessibilityLabel={`${en}. ${fr}`}>
+    <Pressable onPress={() => t && say(t)} style={s.squirrel} accessibilityRole="button" accessibilityLabel={t ? `${t}. ${fr}` : fr}>
       <View style={[s.avatar, big && { width: 96, height: 96, borderRadius: 48 }]}>
         <Text style={{ fontSize: big ? 56 : 40 }}>🐿️</Text>
       </View>
       <View style={{ flex: 1 }}>
         <View style={s.tail} />
         <View style={s.bubble}>
-          <Text style={s.bubbleEn}>{en}</Text>
-          <Text style={s.bubbleFr}>{fr}</Text>
+          {t ? <Text style={s.bubbleEn}>{t}</Text> : null}
+          <Text style={t ? s.bubbleFr : [s.bubbleEn, { fontSize: 18 }]}>{fr}</Text>
         </View>
       </View>
     </Pressable>

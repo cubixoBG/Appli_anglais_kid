@@ -1,19 +1,24 @@
 // Notation tolérante : la reconnaissance vocale est moins fiable avec une voix d'enfant.
 export type Grade = 'great' | 'almost' | 'retry';
 
-const NUMBERS: Record<string, string> = {
-  '1': 'one', '2': 'two', '3': 'three', '4': 'four', '5': 'five', '6': 'six',
-  '7': 'seven', '8': 'eight', '9': 'nine', '10': 'ten', '11': 'eleven', '12': 'twelve',
-};
+const EN_NUMBERS = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
 
-function words(text: string): string[] {
+const EN_HINTS: [RegExp, string][] = [
+  [/th/, 'Écoute bien le « th » : la langue entre les dents !'],
+  [/\bh/, 'Écoute bien le « h » : on souffle comme sur une vitre !'],
+];
+
+function words(text: string, numbers: string[]): string[] {
   return text
     .toLowerCase()
+    .replace(/\d+/g, (d) => numbers[Number(d) - 1] ?? d) // la reconnaissance écrit « 10 » pour « ten »
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '') // « está » = « esta », « fünf » = « funf »
+    .replace(/ß/g, 'ss')
     .replace(/[’']m\b/g, ' am')
     .replace(/[^a-z0-9\s]/g, ' ')
     .split(/\s+/)
-    .filter(Boolean)
-    .map((w) => NUMBERS[w] ?? w);
+    .filter(Boolean);
 }
 
 function similarity(a: string, b: string): number {
@@ -27,22 +32,20 @@ function similarity(a: string, b: string): number {
 
 // Pour chaque mot attendu, on garde le mot entendu le plus proche. Les mots en trop sont ignorés
 // (« My name is Lucie » compte pour « My name is »).
-export function scoreOne(expected: string, heard: string): number {
-  const exp = words(expected);
-  const got = words(heard);
+export function scoreOne(expected: string, heard: string, numbers = EN_NUMBERS): number {
+  const exp = words(expected, numbers);
+  const got = words(heard, numbers);
   if (!exp.length || !got.length) return 0;
   return exp.reduce((sum, w) => sum + Math.max(...got.map((g) => similarity(w, g))), 0) / exp.length;
 }
 
-export function grade(expected: string, alternatives: string[]): Grade {
-  const best = Math.max(0, ...alternatives.map((h) => scoreOne(expected, h)));
+export function grade(expected: string, alternatives: string[], numbers = EN_NUMBERS): Grade {
+  const best = Math.max(0, ...alternatives.map((h) => scoreOne(expected, h, numbers)));
   return best >= 0.85 ? 'great' : best >= 0.5 ? 'almost' : 'retry';
 }
 
 // Un conseil sur un son difficile pour un francophone, si le mot en contient un.
-export function hint(expected: string): string {
+export function hint(expected: string, rules = EN_HINTS): string {
   const e = expected.toLowerCase();
-  if (e.includes('th')) return 'Écoute bien le « th » : la langue entre les dents !';
-  if (/\bh/.test(e)) return 'Écoute bien le « h » : on souffle comme sur une vitre !';
-  return 'Écoute encore et répète doucement.';
+  return rules.find(([re]) => re.test(e))?.[1] ?? 'Écoute encore et répète doucement.';
 }

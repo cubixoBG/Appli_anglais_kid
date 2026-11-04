@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Word } from './data';
+import { T } from './lang';
 import { grade, Grade, hint } from './score';
 import { canListen, listen, say } from './speech';
 import { Button, C, Card, F, s, Squirrel, Text } from './ui';
 
-const FEEDBACK: Record<Grade, { en: string; fr: string }> = {
-  great: { en: 'Well done!', fr: 'Bravo, c’est super !' },
-  almost: { en: 'Almost!', fr: 'Presque !' },
-  retry: { en: 'One more time?', fr: 'Encore une fois ?' },
-};
+// Le retour de l'écureuil : dans la langue apprise, avec le sous-titre en français.
+const FEEDBACK_FR: Record<Grade, string> = { great: 'Bravo, c’est super !', almost: 'Presque !', retry: 'Encore une fois ?' };
 
 // Écouter → répéter → retour. Jamais bloquant : après 2 essais, on peut toujours passer au suivant.
 export function RepeatCard({ word, showText, onNext }: { word: Word; showText: boolean; onNext: (g: Grade) => void }) {
@@ -21,19 +19,19 @@ export function RepeatCard({ word, showText, onNext }: { word: Word; showText: b
   useEffect(() => {
     setResult(null);
     setTries(0);
-    say(word.en);
+    say(word.t);
   }, [word]);
 
   async function repeat() {
     let g: Grade = 'great';
     if (mic) {
       setListening(true);
-      g = grade(word.en, await listen(word.en));
+      g = grade(word.t, await listen(word.t), T().numbers);
       setListening(false);
     }
     setResult(g);
     setTries((t) => t + 1);
-    say(FEEDBACK[g].en);
+    say(T()[g]);
   }
 
   const revealed = showText || result !== null;
@@ -45,14 +43,14 @@ export function RepeatCard({ word, showText, onNext }: { word: Word; showText: b
         <View style={{ width: 132, height: 132, borderRadius: 66, backgroundColor: C.paper, alignItems: 'center', justifyContent: 'center' }}>
           <Text style={{ fontSize: 80 }}>{word.emoji}</Text>
         </View>
-        <Text style={[s.big, { marginTop: 8 }]}>{revealed ? word.en : '? ? ?'}</Text>
+        <Text style={[s.big, { marginTop: 8 }]}>{revealed ? word.t : '? ? ?'}</Text>
         <View style={{ alignSelf: 'stretch', borderTopWidth: 2, borderStyle: 'dashed', borderColor: C.line, marginVertical: 4 }} />
         <Text style={s.muted}>{revealed ? word.fr : 'Écoute bien…'}</Text>
       </Card>
 
       <View style={s.row}>
-        <Button label="🔊  Écouter" onPress={() => say(word.en)} variant="outline" style={{ flex: 1 }} />
-        <Button label="🐢  Lentement" onPress={() => say(word.en, true)} variant="outline" style={{ flex: 1 }} />
+        <Button label="🔊  Écouter" onPress={() => say(word.t)} variant="outline" style={{ flex: 1 }} />
+        <Button label="🐢  Lentement" onPress={() => say(word.t, true)} variant="outline" style={{ flex: 1 }} />
       </View>
 
       {/* Gros bouton micro rond : l'anneau rouge montre que l'écureuil écoute. */}
@@ -80,8 +78,8 @@ export function RepeatCard({ word, showText, onNext }: { word: Word; showText: b
 
       {result ? (
         <Squirrel
-          en={FEEDBACK[result].en}
-          fr={result === 'great' ? FEEDBACK.great.fr : `${FEEDBACK[result].fr} ${hint(word.en)}`}
+          t={T()[result]}
+          fr={result === 'great' ? FEEDBACK_FR.great : `${FEEDBACK_FR[result]} ${hint(word.t, T().hints)}`}
         />
       ) : null}
 
