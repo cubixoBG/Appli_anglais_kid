@@ -46,6 +46,12 @@
         "projectId": "779f89fb-873e-4a46-9d33-3cb4acfe7e28"
       }
     },
-    "owner": "morganbos-team"
+    "owner": "morganbos-team",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/779f89fb-873e-4a46-9d33-3cb4acfe7e28"
+    }
   }
 }
