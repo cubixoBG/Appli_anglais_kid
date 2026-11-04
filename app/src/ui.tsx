@@ -1,6 +1,7 @@
 import { ComponentProps, ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text as RNText, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Emoji } from './Emoji';
 import { say } from './speech';
 
 // Thème « carnet de voyage » : papier crème, encre marine, un seul accent rouge (boîte aux lettres anglaise).
@@ -64,7 +65,7 @@ export function Squirrel({ t, fr, big }: { t?: string; fr: string; big?: boolean
   return (
     <Pressable onPress={() => t && say(t)} style={s.squirrel} accessibilityRole="button" accessibilityLabel={t ? `${t}. ${fr}` : fr}>
       <View style={[s.avatar, big && { width: 96, height: 96, borderRadius: 48 }]}>
-        <Text style={{ fontSize: big ? 56 : 40 }}>🐿️</Text>
+        <Emoji e="🐿️" size={big ? 56 : 40} />
       </View>
       <View style={{ flex: 1 }}>
         <View style={s.tail} />
@@ -80,8 +81,8 @@ export function Squirrel({ t, fr, big }: { t?: string; fr: string; big?: boolean
 type Variant = 'red' | 'ink' | 'outline';
 
 // Le bouton s'enfonce dans son ombre quand on appuie dessus.
-export function Button({ label, onPress, variant = 'ink', big, style, disabled }: {
-  label: string; onPress: () => void; variant?: Variant; big?: boolean; style?: ViewStyle; disabled?: boolean;
+export function Button({ label, icon, onPress, variant = 'ink', big, style, disabled }: {
+  label: string; icon?: string; onPress: () => void; variant?: Variant; big?: boolean; style?: ViewStyle; disabled?: boolean;
 }) {
   const bg = variant === 'red' ? C.red : variant === 'ink' ? C.ink : C.card;
   const fg = variant === 'outline' ? C.ink : C.card;
@@ -93,7 +94,10 @@ export function Button({ label, onPress, variant = 'ink', big, style, disabled }
           <View style={[s.shadow, { borderRadius: big ? 28 : 18 }]} />
           <View style={[s.button, big && s.buttonBig, { backgroundColor: bg },
             pressed && { transform: [{ translateX: SHADOW - 1 }, { translateY: SHADOW - 1 }] }]}>
-            <Text style={[s.buttonText, { color: fg }, big && { fontSize: 24 }]}>{label}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              {icon ? <Emoji e={icon} size={big ? 30 : 22} /> : null}
+              <Text style={[s.buttonText, { color: fg, flexShrink: 1 }, big && { fontSize: 24 }]}>{label}</Text>
+            </View>
           </View>
         </View>
       )}

@@ -4,6 +4,7 @@ import { Pressable, TextInput, View } from 'react-native';
 import { Lang, LANG_CODES } from './data';
 import { LANGS } from './lang';
 import { Profile } from './passport';
+import { Emoji } from './Emoji';
 import { say } from './speech';
 import { Button, C, Card, F, s, Screen, Squirrel, Text } from './ui';
 
@@ -18,7 +19,7 @@ export function Loading() {
   return (
     <View style={{ flex: 1, backgroundColor: C.paper, alignItems: 'center', justifyContent: 'center', gap: 8 }}
       accessibilityLabel="Chargement">
-      <Text style={{ fontSize: 56 }}>🐿️</Text>
+      <Emoji e="🐿️" size={56} />
       <LottieView source={require('../assets/loading.json')} autoPlay loop style={{ width: 200, height: 200 }} />
       <Text style={{ fontSize: 20, fontWeight: '800', color: C.ink, width: 250 }}>
         Je prépare ta valise{'.'.repeat(dots)}
@@ -58,7 +59,7 @@ export function Welcome({ initial, onDone, onBack }: {
             <Pressable key={l} onPress={() => { setLang(l); say(p.hi, false, p.voice); }} style={{ width: '47%' }}
               accessibilityRole="radio" accessibilityState={{ selected: on }} accessibilityLabel={p.label}>
               <Card bg={on ? C.ink : C.card} tilt={on ? -2 : 0}>
-                <Text style={{ fontSize: 40 }}>{p.flag}</Text>
+                <Emoji e={p.flag} size={40} />
                 <Text style={{ fontFamily: F.bold, fontSize: 18, color: on ? C.paper : C.ink }}>{p.label}</Text>
                 <Text style={{ fontFamily: F.regular, fontSize: 14, color: on ? C.paper : C.soft }}>{p.hi}</Text>
               </Card>
@@ -67,7 +68,7 @@ export function Welcome({ initial, onDone, onBack }: {
         })}
       </View>
 
-      <Button big variant="red" label="C’est parti !  ✈️" disabled={!clean || !lang}
+      <Button big variant="red" icon="✈️" label="C’est parti !" disabled={!clean || !lang}
         onPress={() => lang && onDone({ name: clean, lang })} />
     </Screen>
   );

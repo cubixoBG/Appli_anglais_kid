@@ -266,3 +266,12 @@ h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.1; font-weight: 800; 
 .emoji-anim { position: absolute; inset: 0; }
 .emoji-anim:empty { display: none; }
 img.dev-avatar { width: 130px; height: 130px; object-fit: cover; object-position: center 30%; background: var(--card); }
+
+/* Logos des partenaires : vignettes collées comme des autocollants */
+.logo-tile {
+  flex: none; width: 92px; height: 92px; border-radius: 20px; overflow: hidden; border: 3px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--ink); background: #fff; rotate: var(--tilt); transition: rotate 0.25s, translate 0.25s, box-shadow 0.25s;
+}
+.logo-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.logo-tile.mmi img { scale: 1.12; } /* le logo MMI a une grande marge blanche */
+.credit:hover .logo-tile { rotate: 0deg; translate: -2px -2px; box-shadow: 7px 7px 0 var(--ink); }

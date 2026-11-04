@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, useWindowDimensions, View } from 'react-native';
 import { currentStep, pick, SESSIONS_PER_STEP, STEPS, Word } from './data';
 import { profile, T } from './lang';
+import { Emoji } from './Emoji';
 import { RepeatCard } from './RepeatCard';
 import { testNotification } from './reminder';
 import { say } from './speech';
@@ -28,7 +29,7 @@ function Ticket({ icon, label, sub, done, onPress }: {
       {({ pressed }) => (
         <Card style={{ opacity: pressed ? 0.85 : 1 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'stretch', marginVertical: -6 }}>
-            <Text style={{ fontSize: 40, width: 56, textAlign: 'center' }}>{icon}</Text>
+            <View style={{ width: 56, alignItems: 'center' }}><Emoji e={icon} size={40} /></View>
             <View style={{ alignSelf: 'stretch', borderLeftWidth: 2.5, borderStyle: 'dashed', borderColor: C.line, marginHorizontal: 16 }} />
             <View style={{ flex: 1, paddingVertical: 4 }}>
               <Text style={{ fontFamily: F.bold, fontSize: 18, color: C.ink }}>{label}</Text>
@@ -102,7 +103,7 @@ function TubeMap({ stickers, selected, onSelect }: {
               ) : passed ? (
                 <Text style={{ fontSize: 16, color: C.ink, fontFamily: F.bold }}>✓</Text>
               ) : (
-                <Text style={{ fontSize: 14, opacity: 0.5 }}>🔒</Text>
+                <Emoji e="🔒" size={14} opacity={0.5} />
               )}
             </Pressable>
           );
@@ -129,7 +130,7 @@ export function Home({ done, stickers, step, onSelectStep, onOpen, onPassport, o
         <Text style={s.label}>Mon carnet de voyage</Text>
         <Pressable onPress={onProfile} accessibilityRole="button" accessibilityLabel={`Langue : ${T().label}. Changer de langue ou de prénom`}
           style={{ flexDirection: 'row', alignItems: 'center', gap: 6, borderWidth: 2, borderColor: C.ink, borderRadius: 14, paddingHorizontal: 10, paddingVertical: 4, backgroundColor: C.card }}>
-          <Text style={{ fontSize: 20 }}>{T().flag}</Text>
+          <Emoji e={T().flag} size={20} />
           <Text style={{ fontFamily: F.semi, fontSize: 14, color: C.ink }}>Changer</Text>
         </Pressable>
       </View>
@@ -149,9 +150,9 @@ export function Home({ done, stickers, step, onSelectStep, onOpen, onPassport, o
       ))}
 
       <TubeMap stickers={stickers} selected={step} onSelect={onSelectStep} />
-      <Button label="🛂  Mon passeport" variant="red" onPress={onPassport} />
+      <Button icon="🛂" label="Mon passeport" variant="red" onPress={onPassport} />
       {/* shortcut: bouton de diagnostic des notifications, à retirer une fois validées */}
-      <Button label="🔔  Tester la notification" variant="outline"
+      <Button icon="🔔" label="Tester la notification" variant="outline"
         onPress={() => testNotification().then((m) => Alert.alert('Notifications', m), (e) => Alert.alert('Erreur', String(e)))} />
     </Screen>
   );
@@ -185,7 +186,7 @@ export function Parrot({ words: stepWords, onFinish, onBack }: GameProps) {
       <Screen onBack={onBack} title="Le perroquet">
         <Squirrel big t={T().parrot} fr="Quel super perroquet !" />
         <Card tilt={2}>
-          <Text style={{ fontSize: 72 }}>🦜</Text>
+          <Emoji e="🦜" size={72} />
           <Text style={{ fontSize: 40, letterSpacing: 6 }}>
             {words.map((_, n) => (n < Math.max(1, stars) ? '★' : '☆')).join('')}
           </Text>
@@ -270,7 +271,7 @@ export function Memory({ words: stepWords, onFinish, onBack }: GameProps) {
               }}>
                 {shown ? (
                   <>
-                    <Text style={{ fontSize: cardH * 0.36 }}>{c.kind === 'image' ? c.word.emoji : '🔊'}</Text>
+                    <Emoji e={c.kind === 'image' ? c.word.emoji : '🔊'} size={cardH * 0.36} />
                     {done || c.kind === 'sound' ? (
                       <Text style={{ fontFamily: F.bold, fontSize: cardH < 120 ? 14 : 17, color: C.ink, textAlign: 'center' }}>{c.word.t}</Text>
                     ) : null}
@@ -281,7 +282,7 @@ export function Memory({ words: stepWords, onFinish, onBack }: GameProps) {
                     position: 'absolute', top: 8, left: 8, right: 8, bottom: 8, borderRadius: 12,
                     borderWidth: 2, borderStyle: 'dashed', borderColor: C.paper, alignItems: 'center', justifyContent: 'center',
                   }}>
-                    <Text style={{ fontSize: cardH * 0.28 }}>🐿️</Text>
+                    <Emoji e="🐿️" size={cardH * 0.28} />
                   </View>
                 )}
                 {done ? <Stamp label="✓" style={{ top: 8, right: 8 }} /> : null}
@@ -308,7 +309,10 @@ export function StickerWon({ count, onContinue }: { count: number; onContinue: (
       {unlocked ? (
         <Card bg={C.ink} tilt={1}>
           <Text style={[s.label, { color: C.paper }]}>Nouvelle étape débloquée</Text>
-          <Text style={{ fontFamily: F.bold, fontSize: 26, color: C.paper, textAlign: 'center' }}>🚉  {unlocked}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Emoji e="🚉" size={26} />
+            <Text style={{ fontFamily: F.bold, fontSize: 26, color: C.paper, textAlign: 'center', flexShrink: 1 }}>{unlocked}</Text>
+          </View>
         </Card>
       ) : null}
       <View style={{ alignItems: 'center', marginVertical: 16 }}>
@@ -318,13 +322,13 @@ export function StickerWon({ count, onContinue }: { count: number; onContinue: (
             width: 220, height: 220, borderRadius: 110, backgroundColor: C.card, borderWidth: 3, borderColor: C.ink,
             alignItems: 'center', justifyContent: 'center',
           }}>
-            <Text style={{ fontSize: 120 }}>{sticker.emoji}</Text>
+            <Emoji e={sticker.emoji} size={120} />
           </View>
           <Stamp label="NEW!" style={{ top: 4, right: -8 }} />
         </View>
       </View>
       <Text style={s.big}>{sticker.name}</Text>
-      <Button big label="🛂  Le coller dans mon passeport" variant="red" onPress={onContinue} />
+      <Button big icon="🛂" label="Le coller dans mon passeport" variant="red" onPress={onContinue} />
     </Screen>
   );
 }
@@ -334,7 +338,7 @@ export function Passport({ count, onBack }: { count: number; onBack: () => void 
     <Screen onBack={onBack}>
       {/* Couverture du passeport */}
       <Card bg={C.ink}>
-        <Text style={{ fontSize: 44 }}>{T().cover}</Text>
+        <Emoji e={T().cover} size={44} />
         <Text style={{ fontFamily: F.bold, fontSize: 26, color: C.paper, letterSpacing: 4 }}>{T().passport}</Text>
         <Text style={{ fontFamily: F.regular, fontSize: 14, color: C.paper, opacity: 0.8, letterSpacing: 2 }}>
           {`${profile.name} · MON VOYAGE EN ${T().country}`.toUpperCase()}
@@ -358,7 +362,7 @@ export function Passport({ count, onBack }: { count: number; onBack: () => void 
                 borderWidth: got ? 3 : 2.5, borderStyle: got ? 'solid' : 'dashed', borderColor: got ? C.ink : C.line,
                 backgroundColor: got ? C.card : 'transparent', transform: [{ rotate: `${got ? TILTS[i] : 0}deg` }],
               }}>
-                <Text style={{ fontSize: 44, opacity: got ? 1 : 0.2 }}>{got ? st.emoji : '?'}</Text>
+                {got ? <Emoji e={st.emoji} size={44} /> : <Text style={{ fontSize: 44, opacity: 0.2 }}>?</Text>}
               </View>
               <Text numberOfLines={2} style={{ fontFamily: F.regular, fontSize: 12, color: got ? C.ink : C.soft, textAlign: 'center' }}>
                 {got ? st.name : '…'}
@@ -367,7 +371,12 @@ export function Passport({ count, onBack }: { count: number; onBack: () => void 
           );
         })}
       </View>
-      {count >= T().stickers.length ? <Text style={s.big}>🎉 Passeport complet !</Text> : null}
+      {count >= T().stickers.length ? (
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+          <Emoji e="🎉" size={32} />
+          <Text style={s.big}>Passeport complet !</Text>
+        </View>
+      ) : null}
     </Screen>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Word } from './data';
+import { Emoji } from './Emoji';
 import { T } from './lang';
 import { grade, Grade, hint } from './score';
 import { canListen, listen, say } from './speech';
@@ -41,7 +42,7 @@ export function RepeatCard({ word, showText, onNext }: { word: Word; showText: b
     <View style={{ gap: 20 }}>
       <Card tilt={-1.5} style={{ marginHorizontal: 8 }}>
         <View style={{ width: 132, height: 132, borderRadius: 66, backgroundColor: C.paper, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontSize: 80 }}>{word.emoji}</Text>
+          <Emoji e={word.emoji} size={80} />
         </View>
         <Text style={[s.big, { marginTop: 8 }]}>{revealed ? word.t : '? ? ?'}</Text>
         <View style={{ alignSelf: 'stretch', borderTopWidth: 2, borderStyle: 'dashed', borderColor: C.line, marginVertical: 4 }} />
@@ -49,8 +50,8 @@ export function RepeatCard({ word, showText, onNext }: { word: Word; showText: b
       </Card>
 
       <View style={s.row}>
-        <Button label="🔊  Écouter" onPress={() => say(word.t)} variant="outline" style={{ flex: 1 }} />
-        <Button label="🐢  Lentement" onPress={() => say(word.t, true)} variant="outline" style={{ flex: 1 }} />
+        <Button icon="🔊" label="Écouter" onPress={() => say(word.t)} variant="outline" style={{ flex: 1 }} />
+        <Button icon="🐢" label="Lentement" onPress={() => say(word.t, true)} variant="outline" style={{ flex: 1 }} />
       </View>
 
       {/* Gros bouton micro rond : l'anneau rouge montre que l'écureuil écoute. */}
@@ -66,7 +67,7 @@ export function RepeatCard({ word, showText, onNext }: { word: Word; showText: b
                 borderWidth: 3, borderColor: C.ink, alignItems: 'center', justifyContent: 'center',
                 transform: pressed ? [{ translateX: 5 }, { translateY: 5 }] : [],
               }}>
-                <Text style={{ fontSize: 56 }}>{listening ? '👂' : mic ? '🎤' : '🗣️'}</Text>
+                <Emoji e={listening ? '👂' : mic ? '🎤' : '🗣️'} size={56} />
               </View>
             </View>
           )}

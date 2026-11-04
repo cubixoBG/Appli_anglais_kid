@@ -264,17 +264,21 @@ export default function Home() {
             </div>
             <div className="credit-side">
               <div className="card credit" data-reveal style={{ transitionDelay: "100ms" }}>
-                <span className="trust-icon"><Emoji e="🎓" /></span>
+                <span className="logo-tile mmi" style={{ ["--tilt" as string]: "-4deg" }}>
+                  <Image src="/logos/mmi.png" alt="Logo MMI Le Puy-en-Velay" width={180} height={180} />
+                </span>
                 <div>
                   <strong>Un projet scolaire</strong>
                   <p className="muted left">Créée pendant un projet du BUT MMI à l&apos;IUT du Puy-en-Velay.</p>
                 </div>
               </div>
               <div className="card credit" data-reveal style={{ transitionDelay: "200ms" }}>
-                <span className="trust-icon"><Emoji e="🐙" /></span>
+                <span className="logo-tile" style={{ ["--tilt" as string]: "3deg" }}>
+                  <Image src="/logos/oktopod.png" alt="Logo Oktopod" width={180} height={180} />
+                </span>
                 <div>
-                  <strong>Hébergée par Oktopod</strong>
-                  <p className="muted left">L&apos;appli et ce site sont hébergés par Oktopod.</p>
+                  <strong>Bientôt hébergée grâce à Oktopod</strong>
+                  <p className="muted left">L&apos;appli sera prochainement hébergée grâce à Oktopod.</p>
                 </div>
               </div>
             </div>

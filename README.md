@@ -91,4 +91,4 @@ npm test            # tests de la notation de prononciation
 
 ---
 
-<sub>Projet réalisé par BONNE Morgan dans le cadre du BUT MMI à l'IUT du Puy-en-Velay.</sub>
+<sub>Projet réalisé par BONNE Morgan dans le cadre du BUT MMI à l’IUT du Puy-en-Velay. Emojis animés : [Noto Emoji](https://googlefonts.github.io/noto-emoji-animation/) de Google, licence CC BY 4.0, et [Fluent Emoji Animated](https://github.com/microsoft/fluentui-emoji-animated) de Microsoft, licence MIT.</sub>
