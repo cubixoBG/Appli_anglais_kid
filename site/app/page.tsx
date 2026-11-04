@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Footer, Nav } from "./chrome";
 import { Emoji, HelloCycle, RevealOnScroll, Suitcase } from "./effects";
 
 // Envoie l'APK déposé dans site/apk (voir app/telecharger/route.ts).
@@ -25,14 +26,7 @@ export default function Home() {
   return (
     <>
       <RevealOnScroll />
-      <nav className="nav">
-        <a href="#" className="brand">
-          <span className="brand-avatar"><Emoji e="🐿️" /></span> Mon voyage
-        </a>
-        <a href="#telecharger" className="btn btn-small btn-red">
-          Télécharger
-        </a>
-      </nav>
+      <Nav />
 
       <main>
         {/* En-tête : promesse + téléphone */}
@@ -286,11 +280,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="footer">
-        <Emoji e="🐿️" /> Développé par <strong>BONNE Morgan</strong> · Projet scolaire, BUT MMI, IUT du Puy-en-Velay
-        <br />
-        <small>Emojis animés : Noto Emoji de Google, licence CC BY 4.0</small>
-      </footer>
+      <Footer />
     </>
   );
 }

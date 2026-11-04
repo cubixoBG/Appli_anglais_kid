@@ -275,3 +275,61 @@ img.dev-avatar { width: 130px; height: 130px; object-fit: cover; object-position
 .logo-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .logo-tile.mmi img { scale: 1.12; } /* le logo MMI a une grande marge blanche */
 .credit:hover .logo-tile { rotate: 0deg; translate: -2px -2px; box-shadow: 7px 7px 0 var(--ink); }
+.emoji-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+
+/* Navigation : liens */
+.nav-links { display: flex; align-items: center; gap: 18px; }
+.nav-link { font-weight: 600; border-bottom: 2.5px solid transparent; transition: border-color 0.2s; }
+.nav-link:hover { border-color: var(--red); }
+.footer a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--red); text-underline-offset: 3px; }
+
+/* Suivi des versions : une ligne de métro verticale, une station par version */
+.versions-title { margin-top: 10px; }
+.timeline { list-style: none; position: relative; margin-top: 48px; padding-left: 56px; display: flex; flex-direction: column; gap: 36px; max-width: 760px; }
+.timeline::before { content: ""; position: absolute; left: 17px; top: 24px; bottom: 24px; width: 8px; border-radius: 4px; background: var(--ink); }
+.version { position: relative; }
+.version-dot {
+  position: absolute; left: -54px; top: 30px; width: 40px; height: 40px; border-radius: 50%;
+  background: var(--card); border: 5px solid var(--ink);
+}
+.version.current .version-dot { background: var(--red); animation: pulse 1.6s infinite; }
+.version-card { position: relative; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+.version.current .version-card { box-shadow: 8px 8px 0 var(--red); }
+.version-head { display: flex; gap: 16px; align-items: center; }
+.version-emoji {
+  flex: none; width: 64px; height: 64px; border-radius: 50%; border: 2.5px solid var(--ink); background: var(--paper);
+  display: grid; place-items: center; font-size: 2rem;
+}
+.version-tag { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: var(--red); }
+.version-name { font-size: 1.5rem; margin: 0; }
+.version-changes { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; color: var(--ink); }
+.version-changes li::marker { color: var(--red); }
+.version-stamp { top: 22px; right: 22px; translate: none; font-size: 0.85rem; }
+@media (max-width: 560px) {
+  .timeline { padding-left: 40px; }
+  .timeline::before { left: 11px; }
+  .version-dot { left: -40px; width: 30px; height: 30px; border-width: 4px; }
+  .version-stamp { position: static; rotate: -4deg; }
+  .nav-links { gap: 12px; }
+}
+
+/* Animation maison des emojis sans version animée */
+.emoji-wiggle, .emoji-flag { display: inline-block; }
+.emoji-wiggle { animation: emoji-wiggle 2.4s ease-in-out infinite; transform-origin: 50% 90%; }
+.emoji-flag { animation: emoji-flag 1.6s ease-in-out infinite; transform-origin: 0% 50%; }
+@keyframes emoji-wiggle {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-8%) rotate(-8deg); }
+  50% { transform: translateY(0) rotate(0deg); }
+  75% { transform: translateY(-8%) rotate(8deg); }
+}
+@keyframes emoji-flag {
+  0%, 100% { transform: perspective(200px) rotateY(0deg) skewY(0deg); }
+  50% { transform: perspective(200px) rotateY(-22deg) skewY(-4deg); }
+}
+/* Prochaine version : station pas encore atteinte, carte en pointillés */
+.version.next .version-dot { border-style: dashed; background: var(--paper); }
+.version.next .version-card { border-style: dashed; box-shadow: none; background: transparent; }
+.version.next .version-stamp { color: var(--soft); border-color: var(--soft); }
+.version.next .version-head, .version.current .version-head { padding-right: 110px; }
+@media (max-width: 560px) { .version.next .version-head, .version.current .version-head { padding-right: 0; } }

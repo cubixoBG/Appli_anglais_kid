@@ -55,6 +55,8 @@ export function Suitcase({ size = 180 }: { size?: number }) {
 // Emojis animés de Google (Noto Animated Emoji, CC BY 4.0), copiés dans public/emoji/<code>.json.
 // shortcut: liste fixe ; pour en ajouter un, télécharger https://fonts.gstatic.com/s/e/notoemoji/latest/<code>/lottie.json
 const ANIMATED = new Set(["1f68c", "1f968", "1f355", "1f366", "1f483", "1f43f", "1f981", "1f512", "1f514", "1f393", "1f419", "1f44b", "2708", "1f389"]);
+// Ceux que Google n'anime pas : WebP animés de Microsoft (Fluent Emoji Animated, MIT), les mêmes que dans l'appli.
+const FLUENT = new Set(["1f384", "1f436", "1f466", "1f467", "1f468", "1f469", "1f482", "1f570", "1f645", "1f64b", "1f64b_200d_2640", "1f686", "1f937", "1f99c", "1f9d1_200d_1f91d_200d_1f9d1", "1f9f8", "2600"]);
 const codeOf = (e: string) => [...e].map((c) => c.codePointAt(0)!.toString(16)).filter((c) => c !== "fe0f").join("_");
 
 // Un emoji : animé (Lottie) s'il existe dans la liste, sinon dessiné avec la police Noto Color Emoji.
@@ -84,7 +86,16 @@ export function Emoji({ e }: { e: string }) {
   return (
     <span className="emoji" role="img" aria-label={e}>
       <span ref={box} className="emoji-anim" aria-hidden />
-      {ready ? null : <span aria-hidden>{e}</span>}
+      {FLUENT.has(code) ? (
+        // <img> simple : next/image figerait le WebP animé
+        <img src={`/emoji-fluent/${code}.webp`} alt="" className="emoji-img" loading="lazy" />
+      ) : ready ? null : (
+        // Sans animation chez Google ni Microsoft : animation maison (drapeau qui flotte, sinon dandinement).
+        <span aria-hidden className={ANIMATED.has(code) ? undefined : /^1f1/.test(code) ? "emoji-flag" : "emoji-wiggle"}
+          style={{ animationDelay: `-${(code.length * 0.37 + parseInt(code.slice(-2), 16) / 100) % 2}s` }}>
+          {e}
+        </span>
+      )}
     </span>
   );
 }
