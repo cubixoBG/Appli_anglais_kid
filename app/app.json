@@ -1,0 +1,58 @@
+{
+  "expo": {
+    "name": "Mon voyage en Angleterre",
+    "slug": "applianglaiskid",
+    "version": "1.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSSpeechRecognitionUsageDescription": "La reconnaissance vocale sert à vérifier ta prononciation.",
+        "NSMicrophoneUsageDescription": "Le micro sert à écouter ta prononciation. Rien n’est enregistré."
+      },
+      "bundleIdentifier": "com.cubixobg.monvoyage"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.cubixobg.monvoyage"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Le micro sert à écouter ta prononciation. Rien n’est enregistré.",
+          "speechRecognitionPermission": "La reconnaissance vocale sert à vérifier ta prononciation."
+        }
+      ],
+      "expo-status-bar",
+      "expo-font",
+      "expo-image"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "779f89fb-873e-4a46-9d33-3cb4acfe7e28"
+      }
+    },
+    "owner": "morganbos-team",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/779f89fb-873e-4a46-9d33-3cb4acfe7e28"
+    }
+  }
+}
