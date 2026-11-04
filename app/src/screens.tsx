@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, useWindowDimensions, View } from 'react-native';
+import { Alert, Pressable, useWindowDimensions, View } from 'react-native';
 import { currentStep, pick, SESSIONS_PER_STEP, STEPS, STICKERS, Word } from './data';
 import { RepeatCard } from './RepeatCard';
+import { testNotification } from './reminder';
 import { say } from './speech';
 import { Button, C, Card, F, s, Screen, Squirrel, Stamp, Text } from './ui';
 
@@ -139,6 +140,9 @@ export function Home({ done, stickers, step, onSelectStep, onOpen, onPassport }:
 
       <TubeMap stickers={stickers} selected={step} onSelect={onSelectStep} />
       <Button label="🛂  Mon passeport" variant="red" onPress={onPassport} />
+      {/* shortcut: bouton de diagnostic des notifications, à retirer une fois validées */}
+      <Button label="🔔  Tester la notification" variant="outline"
+        onPress={() => testNotification().then((m) => Alert.alert('Notifications', m), (e) => Alert.alert('Erreur', String(e)))} />
     </Screen>
   );
 }

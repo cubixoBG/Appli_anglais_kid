@@ -11,8 +11,32 @@ Notifications.setNotificationHandler({
   }),
 });
 
+// Android exige un canal de notifications.
+async function ensureChannel() {
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('rappel', {
+      name: 'Rappel de séance',
+      importance: Notifications.AndroidImportance.DEFAULT,
+    });
+  }
+}
+
+// shortcut: outil de diagnostic temporaire (bouton sur l'accueil), à retirer une fois les notifications validées.
+// Envoie une notification dans 10 s et renvoie un état lisible : permission, nombre de rappels programmés.
+export async function testNotification(): Promise<string> {
+  const perm = await Notifications.requestPermissionsAsync();
+  if (!perm.granted) return `Permission refusée (${perm.status}). Active les notifications dans les réglages Android.`;
+  await ensureChannel();
+  await Notifications.scheduleNotificationAsync({
+    content: { title: '🔔 Test', body: 'Les notifications marchent !' },
+    trigger: { type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: 10, channelId: 'rappel' },
+  });
+  const all = await Notifications.getAllScheduledNotificationsAsync();
+  return `Permission OK. Une notification arrive dans 10 s (ferme l'appli pour la voir).\n${all.length} notification(s) programmée(s) sur le téléphone.`;
+}
+
 // Rappel local chaque jour : aucun serveur, aucune donnée ne quitte le téléphone.
-export async function scheduleDailyReminder(hour = 12, minute = 5) {
+export async function scheduleDailyReminder(hour = 15, minute = 25) {
   // La permission est demandée une fois ; le système retient la réponse.
   const { granted } = await Notifications.requestPermissionsAsync();
   if (!granted) {
@@ -20,13 +44,7 @@ export async function scheduleDailyReminder(hour = 12, minute = 5) {
     return;
   }
 
-  // Android exige un canal de notifications.
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('rappel', {
-      name: 'Rappel de séance',
-      importance: Notifications.AndroidImportance.DEFAULT,
-    });
-  }
+  await ensureChannel();
 
   // On remplace l'ancien rappel pour ne pas en empiler un à chaque lancement.
   await Notifications.cancelAllScheduledNotificationsAsync();
