@@ -5,6 +5,7 @@ import { BackHandler } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { currentStep, STEPS } from './src/data';
 import { loadStickers, saveStickers } from './src/passport';
+import { scheduleDailyReminder } from './src/reminder';
 import { Activity, Home, Learn, Memory, Parrot, Passport, StickerWon } from './src/screens';
 
 type Page = 'home' | Activity | 'sticker' | 'passport';
@@ -20,6 +21,8 @@ export default function App() {
 
   useEffect(() => {
     loadStickers().then(setStickers);
+    // Rappel quotidien (heure dans reminder.ts) ; sans permission, l'appli marche quand même.
+    scheduleDailyReminder().catch(() => {});
   }, []);
 
   useEffect(() => {
