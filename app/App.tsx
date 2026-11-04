@@ -22,7 +22,7 @@ export default function App() {
   useEffect(() => {
     loadStickers().then(setStickers);
     // Rappel quotidien (heure dans reminder.ts) ; sans permission, l'appli marche quand même.
-    scheduleDailyReminder().catch(() => {});
+    scheduleDailyReminder().catch((e) => console.warn('Rappel non programmé :', e));
   }, []);
 
   useEffect(() => {

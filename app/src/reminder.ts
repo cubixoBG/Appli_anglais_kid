@@ -12,10 +12,13 @@ Notifications.setNotificationHandler({
 });
 
 // Rappel local chaque jour : aucun serveur, aucune donnée ne quitte le téléphone.
-export async function scheduleDailyReminder(hour = 11, minute = 45) {
+export async function scheduleDailyReminder(hour = 12, minute = 5) {
   // La permission est demandée une fois ; le système retient la réponse.
   const { granted } = await Notifications.requestPermissionsAsync();
-  if (!granted) return;
+  if (!granted) {
+    console.warn('Rappel : permission des notifications refusée');
+    return;
+  }
 
   // Android exige un canal de notifications.
   if (Platform.OS === 'android') {
