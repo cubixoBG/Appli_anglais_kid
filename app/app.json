@@ -1,13 +1,17 @@
 {
   "expo": {
     "name": "Mon voyage en Angleterre",
-    "slug": "mon-voyage-en-angleterre",
+    "slug": "applianglaiskid",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSSpeechRecognitionUsageDescription": "La reconnaissance vocale sert à vérifier ta prononciation.",
+        "NSMicrophoneUsageDescription": "Le micro sert à écouter ta prononciation. Rien n’est enregistré."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -16,7 +20,10 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,6 +38,12 @@
       ],
       "expo-status-bar",
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "779f89fb-873e-4a46-9d33-3cb4acfe7e28"
+      }
+    },
+    "owner": "morganbos-team"
   }
 }
