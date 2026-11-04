@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { Emoji, HelloCycle, RevealOnScroll, Suitcase } from "./effects";
 
-// L'APK est copié depuis Docs/apk par scripts/copy-apk.mjs (avant npm run dev et npm run build).
-const DOWNLOAD_URL = "/mon-voyage.apk";
+// Envoie l'APK déposé dans site/apk (voir app/telecharger/route.ts).
+const DOWNLOAD_URL = "/telecharger";
 
 const LANGS = [
   { flag: "🇬🇧", name: "Anglais", hi: "Hello!", sticker: "🚌" },
@@ -227,7 +227,7 @@ export default function Home() {
             <Suitcase />
             <h2>Prêt·e pour le départ ?</h2>
             <p className="lead light">Télécharge l&apos;appli sur ton téléphone Android et fais ta première séance.</p>
-            <a href={DOWNLOAD_URL} className="btn btn-red btn-big" download="mon-voyage.apk">
+            <a href={DOWNLOAD_URL} className="btn btn-red btn-big">
               <Emoji e="📲" /> Télécharger l&apos;APK
             </a>
             <ol className="steps">
