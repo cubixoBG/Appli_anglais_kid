@@ -1,4 +1,4 @@
-# 🐿️ Mon voyage en Angleterre
+# 🐿️ Mon voyage
 
 > Une appli mobile pour apprendre l'anglais à l'oral, pensée pour une élève de CM2 qui va passer un séjour dans une famille anglaise.
 

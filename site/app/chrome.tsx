@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Emoji } from "./effects";
 
@@ -6,7 +7,7 @@ export function Nav() {
   return (
     <nav className="nav">
       <Link href="/" className="brand">
-        <span className="brand-avatar"><Emoji e="🐿️" /></span> Mon voyage
+        <Image src="/logo.svg" alt="" width={40} height={40} className="brand-logo" unoptimized /> Mon voyage
       </Link>
       <div className="nav-links">
         <Link href="/versions" className="nav-link">Versions</Link>

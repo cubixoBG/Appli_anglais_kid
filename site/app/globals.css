@@ -333,3 +333,6 @@ img.dev-avatar { width: 130px; height: 130px; object-fit: cover; object-position
 .version.next .version-stamp { color: var(--soft); border-color: var(--soft); }
 .version.next .version-head, .version.current .version-head { padding-right: 110px; }
 @media (max-width: 560px) { .version.next .version-head, .version.current .version-head { padding-right: 0; } }
+/* Logo (la valise) dans la barre du haut */
+.brand-logo { width: 40px; height: 40px; border-radius: 11px; box-shadow: 3px 3px 0 var(--ink); transition: transform 0.3s; }
+.brand:hover .brand-logo { transform: rotate(-10deg) scale(1.08); }

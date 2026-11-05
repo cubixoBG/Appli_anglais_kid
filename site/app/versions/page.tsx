@@ -11,11 +11,23 @@ export const metadata: Metadata = {
 // status : "next" = prochaine version (pas encore téléchargeable), "current" = l'APK proposé au téléchargement.
 const VERSIONS: { version: string; date: string; emoji: string; title: string; status?: "next" | "current"; changes: string[] }[] = [
   {
+    version: "1.1.2",
+    date: "5 novembre 2026",
+    emoji: "🧳",
+    title: "Nouvelle charte graphique et nouveau logo",
+    status: "current",
+    changes: [
+      "Nouveau logo : la valise rouge, sur l'icône de l'appli comme sur le site",
+      "L'appli s'appelle désormais simplement « Mon voyage »",
+      "Icône adaptée à tous les téléphones Android, y compris les thèmes monochromes",
+      "Nouvel écran de démarrage aux couleurs du carnet de voyage",
+    ],
+  },
+  {
     version: "1.1.1",
-    date: "Bientôt",
+    date: "5 novembre 2026",
     emoji: "✨",
     title: "Tout tient sur l'écran",
-    status: "next",
     changes: [
       "Les mini-jeux tiennent sur un seul écran, sans faire défiler",
       "Écouter et Lentement deviennent deux boutons ronds de chaque côté du micro",
@@ -30,7 +42,6 @@ const VERSIONS: { version: string; date: string; emoji: string; title: string; s
     date: "4 novembre 2026",
     emoji: "🎉",
     title: "Quatre langues et des emojis qui bougent",
-    status: "current",
     changes: [
       "Au lancement, l'enfant écrit son prénom et choisit sa langue : anglais, espagnol, allemand ou italien",
       "Chaque langue a sa voix, ses mots, ses autocollants et son passeport",
