@@ -21,20 +21,6 @@ async function ensureChannel() {
   }
 }
 
-// shortcut: outil de diagnostic temporaire (bouton sur l'accueil), à retirer une fois les notifications validées.
-// Envoie une notification dans 10 s et renvoie un état lisible : permission, nombre de rappels programmés.
-export async function testNotification(): Promise<string> {
-  const perm = await Notifications.requestPermissionsAsync();
-  if (!perm.granted) return `Permission refusée (${perm.status}). Active les notifications dans les réglages Android.`;
-  await ensureChannel();
-  await Notifications.scheduleNotificationAsync({
-    content: { title: '🔔 Test', body: 'Les notifications marchent !' },
-    trigger: { type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: 10, channelId: 'rappel' },
-  });
-  const all = await Notifications.getAllScheduledNotificationsAsync();
-  return `Permission OK. Une notification arrive dans 10 s (ferme l'appli pour la voir).\n${all.length} notification(s) programmée(s) sur le téléphone.`;
-}
-
 // Rappel local chaque jour : aucun serveur, aucune donnée ne quitte le téléphone.
 export async function scheduleDailyReminder(name: string, hour = 15, minute = 45) {
   // La permission est demandée une fois ; le système retient la réponse.
