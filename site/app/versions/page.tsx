@@ -30,6 +30,7 @@ const VERSIONS: { version: string; date: string; emoji: string; title: string; s
     date: "4 novembre 2026",
     emoji: "🎉",
     title: "Quatre langues et des emojis qui bougent",
+    status: "current",
     changes: [
       "Au lancement, l'enfant écrit son prénom et choisit sa langue : anglais, espagnol, allemand ou italien",
       "Chaque langue a sa voix, ses mots, ses autocollants et son passeport",
@@ -43,7 +44,6 @@ const VERSIONS: { version: string; date: string; emoji: string; title: string; s
     date: "4 novembre 2026",
     emoji: "✈️",
     title: "Le grand départ",
-    status: "current",
     changes: [
       "Premier APK à installer sur Android, en anglais",
       "Deux étapes du voyage : Les présentations et L'aéroport, avec 20 mots chacune",
