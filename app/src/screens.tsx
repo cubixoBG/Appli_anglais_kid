@@ -6,7 +6,7 @@ import { Emoji } from './Emoji';
 import { RepeatCard } from './RepeatCard';
 import { testNotification } from './reminder';
 import { say } from './speech';
-import { Button, C, Card, F, s, Screen, Squirrel, Stamp, Text } from './ui';
+import { Button, C, Card, F, s, Screen, Squirrel, Stamp, Text, useScale } from './ui';
 
 export type Activity = 'learn' | 'memory' | 'parrot';
 
@@ -29,15 +29,15 @@ function Ticket({ icon, label, sub, done, onPress }: {
       {({ pressed }) => (
         <Card style={{ opacity: pressed ? 0.85 : 1 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'stretch', marginVertical: -6 }}>
-            <View style={{ width: 56, alignItems: 'center' }}><Emoji e={icon} size={40} /></View>
-            <View style={{ alignSelf: 'stretch', borderLeftWidth: 2.5, borderStyle: 'dashed', borderColor: C.line, marginHorizontal: 16 }} />
-            <View style={{ flex: 1, paddingVertical: 4 }}>
-              <Text style={{ fontFamily: F.bold, fontSize: 18, color: C.ink }}>{label}</Text>
-              <Text style={{ fontFamily: F.regular, fontSize: 15, color: C.soft }}>{sub}</Text>
+            <View style={{ width: 46, alignItems: 'center' }}><Emoji e={icon} size={32} /></View>
+            <View style={{ alignSelf: 'stretch', borderLeftWidth: 2.5, borderStyle: 'dashed', borderColor: C.line, marginHorizontal: 12 }} />
+            <View style={{ flex: 1, paddingVertical: 2 }}>
+              <Text style={{ fontFamily: F.bold, fontSize: 17, color: C.ink }}>{label}</Text>
+              <Text style={{ fontFamily: F.regular, fontSize: 14, color: C.soft }}>{sub}</Text>
             </View>
             <Text style={{ fontFamily: F.bold, fontSize: 24, color: C.ink }}>→</Text>
           </View>
-          {done ? <Stamp label="FAIT ✓" style={{ right: 36, top: 14 }} /> : null}
+          {done ? <Stamp label="FAIT ✓" style={{ right: 32, top: 10 }} /> : null}
         </Card>
       )}
     </Pressable>
@@ -70,13 +70,13 @@ function TubeMap({ stickers, selected, onSelect }: {
               accessibilityRole="button" accessibilityState={{ selected: chosen, disabled: i > current }}
               accessibilityLabel={`${step.name}${i > current ? ', verrouillée' : chosen ? ', choisie' : ''}`}
               style={{
-                flexDirection: 'row', alignItems: 'center', height: 40, marginHorizontal: -8, paddingHorizontal: 8,
+                flexDirection: 'row', alignItems: 'center', height: 34, marginHorizontal: -8, paddingHorizontal: 8,
                 borderRadius: 12, backgroundColor: chosen && current > 0 ? C.paper : 'transparent',
               }}>
               <View style={{ width: 32, alignItems: 'center', alignSelf: 'stretch', justifyContent: 'center' }}>
                 <View style={{
                   position: 'absolute', width: 8, backgroundColor: passed ? C.ink : here ? C.red : C.line,
-                  top: i === 0 ? 20 : 0, bottom: i === STEPS.length - 1 ? 20 : 0,
+                  top: i === 0 ? 17 : 0, bottom: i === STEPS.length - 1 ? 17 : 0,
                 }} />
                 <View style={{
                   width: here ? 24 : 16, height: here ? 24 : 16, borderRadius: 12,
@@ -85,7 +85,7 @@ function TubeMap({ stickers, selected, onSelect }: {
                 }} />
               </View>
               <Text style={{
-                marginLeft: 12, flex: 1, fontSize: here || chosen ? 17 : 16,
+                marginLeft: 12, flex: 1, fontSize: here || chosen ? 16 : 15,
                 fontFamily: here || chosen ? F.bold : F.regular, color: here || passed ? C.ink : C.soft,
               }}>
                 {step.name}
@@ -127,20 +127,20 @@ export function Home({ done, stickers, step, onSelectStep, onOpen, onPassport, o
   return (
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
-        <Text style={s.label}>Mon carnet de voyage</Text>
+        <Text numberOfLines={1} style={[s.label, { fontSize: 11, letterSpacing: 1.2, flexShrink: 1, marginRight: 8 }]}>Mon carnet de voyage</Text>
         <Pressable onPress={onProfile} accessibilityRole="button" accessibilityLabel={`Langue : ${T().label}. Changer de langue ou de prénom`}
           style={{ flexDirection: 'row', alignItems: 'center', gap: 6, borderWidth: 2, borderColor: C.ink, borderRadius: 14, paddingHorizontal: 10, paddingVertical: 4, backgroundColor: C.card }}>
           <Emoji e={T().flag} size={20} />
           <Text style={{ fontFamily: F.semi, fontSize: 14, color: C.ink }}>Changer</Text>
         </Pressable>
       </View>
-      <Squirrel big t={hello} fr={`Coucou ${profile.name} ! On commence ta séance ?`} />
+      <Squirrel t={hello} fr={`Coucou ${profile.name} ! On commence ta séance ?`} />
 
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', columnGap: 12, marginTop: 8 }}>
-        <Text style={{ fontFamily: F.bold, fontSize: 22, color: C.ink }}>{revising ? 'Révision' : 'Séance du jour'}</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', columnGap: 12, marginTop: 4 }}>
+        <Text style={{ fontFamily: F.bold, fontSize: 21, color: C.ink }}>{revising ? 'Révision' : 'Séance du jour'}</Text>
         {revising ? null : <Text style={{ fontFamily: F.semi, fontSize: 16, color: C.red }}>{done.size}/3 billets</Text>}
       </View>
-      <Text style={[s.muted, { textAlign: 'left', marginTop: -12 }]}>
+      <Text style={[s.muted, { textAlign: 'left', marginTop: -10, fontSize: 15 }]}>
         {revising
           ? `${STEPS[step].name} · pour t’entraîner, ça ne compte pas pour la séance du jour.`
           : `${STEPS[step].name} · fais les 3 pour gagner un autocollant !`}
@@ -164,7 +164,7 @@ export function Learn({ words: stepWords, onFinish, onBack }: GameProps) {
   const words = useMemo(() => pick(stepWords, 6), [stepWords]);
   const [i, setI] = useState(0);
   return (
-    <Screen onBack={onBack} title={`Écouter et répéter · ${i + 1}/${words.length}`}>
+    <Screen fill onBack={onBack} title={`Écouter et répéter · ${i + 1}/${words.length}`}>
       <RepeatCard word={words[i]} showText onNext={() => (i + 1 < words.length ? setI(i + 1) : onFinish())} />
     </Screen>
   );
@@ -184,10 +184,10 @@ export function Parrot({ words: stepWords, onFinish, onBack }: GameProps) {
   if (finished) {
     return (
       <Screen onBack={onBack} title="Le perroquet">
-        <Squirrel big t={T().parrot} fr="Quel super perroquet !" />
+        <Squirrel t={T().parrot} fr="Quel super perroquet !" />
         <Card tilt={2}>
-          <Emoji e="🦜" size={72} />
-          <Text style={{ fontSize: 40, letterSpacing: 6 }}>
+          <Emoji e="🦜" size={64} />
+          <Text style={{ fontSize: 36, letterSpacing: 6 }}>
             {words.map((_, n) => (n < Math.max(1, stars) ? '★' : '☆')).join('')}
           </Text>
           <Text style={s.muted}>{Math.max(1, stars)} étoile{stars > 1 ? 's' : ''} sur {words.length}</Text>
@@ -197,7 +197,7 @@ export function Parrot({ words: stepWords, onFinish, onBack }: GameProps) {
     );
   }
   return (
-    <Screen onBack={onBack} title={`Le perroquet · ${i + 1}/${words.length}`}>
+    <Screen fill onBack={onBack} title={`Le perroquet · ${i + 1}/${words.length}`}>
       <RepeatCard word={words[i]} showText={false} onNext={(g) => {
         if (g === 'great') setStars((n) => n + 1);
         setI(i + 1);
@@ -222,9 +222,10 @@ export function Memory({ words: stepWords, onFinish, onBack }: GameProps) {
   const [found, setFound] = useState<Set<string>>(new Set());
   const busy = useRef(false);
   const won = found.size === cards.length / 2;
-  // Les 4 rangées de cartes tiennent dans la hauteur de l'écran (en-tête, bulle et marges déduites).
+  // Les 4 rangées de cartes tiennent dans la hauteur de l'écran : on déduit l'en-tête, la bulle,
+  // les marges et les 3 espaces entre rangées.
   const { height } = useWindowDimensions();
-  const cardH = Math.max(84, Math.min(170, (height - 330) / 4));
+  const cardH = Math.max(72, Math.min(160, (height - 270) / 4));
 
   useEffect(() => {
     if (won) say(T().foundAll);
@@ -253,11 +254,11 @@ export function Memory({ words: stepWords, onFinish, onBack }: GameProps) {
   return (
     <Screen onBack={onBack} title="Memory sonore">
       {won ? (
-        <Button big label="Bravo ! Terminer  ✓" variant="red" onPress={onFinish} />
+        <Button label="Bravo ! Terminer  ✓" variant="red" onPress={onFinish} />
       ) : (
-        <Squirrel t={T().pairs} fr="Trouve les paires : une image et son mot !" />
+        <Squirrel compact t={T().pairs} fr="Trouve les paires : une image et son mot !" />
       )}
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 14 }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 12 }}>
         {cards.map((c, i) => {
           const done = found.has(c.word.t);
           const shown = done || open.includes(i);
@@ -296,6 +297,8 @@ export function Memory({ words: stepWords, onFinish, onBack }: GameProps) {
 }
 
 export function StickerWon({ count, onContinue }: { count: number; onContinue: () => void }) {
+  const k = useScale();
+  const disc = Math.round(190 * k);
   const sticker = T().stickers[(count - 1) % T().stickers.length];
   // Cet autocollant fait-il avancer la ligne du voyage ?
   const step = currentStep(count);
@@ -305,24 +308,24 @@ export function StickerWon({ count, onContinue }: { count: number; onContinue: (
   }, [unlocked]);
   return (
     <Screen>
-      <Squirrel big t={T().sticker} fr={`Génial ${profile.name} ! Tu as gagné un autocollant !`} />
+      <Squirrel t={T().sticker} fr={`Génial ${profile.name} ! Tu as gagné un autocollant !`} />
       {unlocked ? (
         <Card bg={C.ink} tilt={1}>
           <Text style={[s.label, { color: C.paper }]}>Nouvelle étape débloquée</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Emoji e="🚉" size={26} />
-            <Text style={{ fontFamily: F.bold, fontSize: 26, color: C.paper, textAlign: 'center', flexShrink: 1 }}>{unlocked}</Text>
+            <Emoji e="🚉" size={22} />
+            <Text style={{ fontFamily: F.bold, fontSize: 22, color: C.paper, textAlign: 'center', flexShrink: 1 }}>{unlocked}</Text>
           </View>
         </Card>
       ) : null}
-      <View style={{ alignItems: 'center', marginVertical: 16 }}>
+      <View style={{ alignItems: 'center', marginVertical: 8 }}>
         <View style={{ transform: [{ rotate: '-6deg' }] }}>
-          <View style={[s.shadow, { borderRadius: 120 }]} />
+          <View style={[s.shadow, { borderRadius: disc }]} />
           <View style={{
-            width: 220, height: 220, borderRadius: 110, backgroundColor: C.card, borderWidth: 3, borderColor: C.ink,
+            width: disc, height: disc, borderRadius: disc / 2, backgroundColor: C.card, borderWidth: 3, borderColor: C.ink,
             alignItems: 'center', justifyContent: 'center',
           }}>
-            <Emoji e={sticker.emoji} size={120} />
+            <Emoji e={sticker.emoji} size={disc * 0.52} />
           </View>
           <Stamp label="NEW!" style={{ top: 4, right: -8 }} />
         </View>
@@ -338,9 +341,9 @@ export function Passport({ count, onBack }: { count: number; onBack: () => void 
     <Screen onBack={onBack}>
       {/* Couverture du passeport */}
       <Card bg={C.ink}>
-        <Emoji e={T().cover} size={44} />
-        <Text style={{ fontFamily: F.bold, fontSize: 26, color: C.paper, letterSpacing: 4 }}>{T().passport}</Text>
-        <Text style={{ fontFamily: F.regular, fontSize: 14, color: C.paper, opacity: 0.8, letterSpacing: 2 }}>
+        <Emoji e={T().cover} size={34} />
+        <Text style={{ fontFamily: F.bold, fontSize: 22, color: C.paper, letterSpacing: 4 }}>{T().passport}</Text>
+        <Text style={{ fontFamily: F.regular, fontSize: 12, color: C.paper, opacity: 0.8, letterSpacing: 2, textAlign: 'center' }}>
           {`${profile.name} · MON VOYAGE EN ${T().country}`.toUpperCase()}
         </Text>
       </Card>
@@ -351,20 +354,20 @@ export function Passport({ count, onBack }: { count: number; onBack: () => void 
           : `${Math.min(count, T().stickers.length)} autocollant${count > 1 ? 's' : ''} sur ${T().stickers.length}`}
       </Text>
 
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 20 }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 14 }}>
         {T().stickers.map((st, i) => {
           const got = i < count;
           return (
             <View key={st.name} accessibilityLabel={got ? st.name : 'Autocollant à gagner'}
-              style={{ width: '30%', alignItems: 'center', gap: 6 }}>
+              style={{ width: '23%', alignItems: 'center', gap: 4 }}>
               <View style={{
                 width: '100%', aspectRatio: 1, borderRadius: 999, alignItems: 'center', justifyContent: 'center',
                 borderWidth: got ? 3 : 2.5, borderStyle: got ? 'solid' : 'dashed', borderColor: got ? C.ink : C.line,
                 backgroundColor: got ? C.card : 'transparent', transform: [{ rotate: `${got ? TILTS[i] : 0}deg` }],
               }}>
-                {got ? <Emoji e={st.emoji} size={44} /> : <Text style={{ fontSize: 44, opacity: 0.2 }}>?</Text>}
+                {got ? <Emoji e={st.emoji} size={34} /> : <Text style={{ fontSize: 30, opacity: 0.2 }}>?</Text>}
               </View>
-              <Text numberOfLines={2} style={{ fontFamily: F.regular, fontSize: 12, color: got ? C.ink : C.soft, textAlign: 'center' }}>
+              <Text numberOfLines={2} style={{ fontFamily: F.regular, fontSize: 11, color: got ? C.ink : C.soft, textAlign: 'center' }}>
                 {got ? st.name : '…'}
               </Text>
             </View>

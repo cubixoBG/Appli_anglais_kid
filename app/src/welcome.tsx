@@ -39,19 +39,16 @@ export function Welcome({ initial, onDone, onBack }: {
   return (
     <Screen onBack={onBack} title={onBack ? 'Mon profil' : undefined}>
       <Text style={[s.label, { marginTop: 8 }]}>Bienvenue à bord</Text>
-      <Squirrel big fr="Coucou ! Je suis ton guide de voyage. Comment tu t’appelles ?" />
+      <Squirrel fr="Coucou ! Je suis ton guide de voyage. Comment tu t’appelles ?" />
       <TextInput value={name} onChangeText={setName} placeholder="Ton prénom" placeholderTextColor={C.soft}
         maxLength={20} autoCapitalize="words" autoCorrect={false} returnKeyType="done" accessibilityLabel="Ton prénom"
         style={{
           borderWidth: 2.5, borderColor: C.ink, borderRadius: 18, backgroundColor: C.card, paddingHorizontal: 18,
-          paddingVertical: 14, fontSize: 20, fontFamily: F.semi, color: C.ink,
+          paddingVertical: 12, fontSize: 19, fontFamily: F.semi, color: C.ink,
         }} />
 
-      <Text style={{ fontFamily: F.bold, fontSize: 22, color: C.ink }}>Quelle langue veux-tu apprendre ?</Text>
-      {initial ? (
-        <Text style={[s.muted, { textAlign: 'left', marginTop: -12 }]}>Chaque langue a son propre passeport.</Text>
-      ) : null}
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 18 }}>
+      <Text style={{ fontFamily: F.bold, fontSize: 20, color: C.ink }}>Quelle langue veux-tu apprendre ?</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 12 }}>
         {LANG_CODES.map((l) => {
           const p = LANGS[l];
           const on = l === lang;
@@ -59,9 +56,12 @@ export function Welcome({ initial, onDone, onBack }: {
             <Pressable key={l} onPress={() => { setLang(l); say(p.hi, false, p.voice); }} style={{ width: '47%' }}
               accessibilityRole="radio" accessibilityState={{ selected: on }} accessibilityLabel={p.label}>
               <Card bg={on ? C.ink : C.card} tilt={on ? -2 : 0}>
-                <Emoji e={p.flag} size={40} />
-                <Text style={{ fontFamily: F.bold, fontSize: 18, color: on ? C.paper : C.ink }}>{p.label}</Text>
-                <Text style={{ fontFamily: F.regular, fontSize: 14, color: on ? C.paper : C.soft }}>{p.hi}</Text>
+                {/* Cartes un peu resserrées pour que l'écran tienne sans défiler. */}
+                <View style={{ alignItems: 'center', marginVertical: -8 }}>
+                  <Emoji e={p.flag} size={24} />
+                  <Text style={{ fontFamily: F.bold, fontSize: 16, color: on ? C.paper : C.ink }}>{p.label}</Text>
+                  <Text style={{ fontFamily: F.regular, fontSize: 13, color: on ? C.paper : C.soft }}>{p.hi}</Text>
+                </View>
               </Card>
             </Pressable>
           );
