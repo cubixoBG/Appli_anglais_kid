@@ -11,11 +11,25 @@ export const metadata: Metadata = {
 // status : "next" = prochaine version (pas encore téléchargeable), "current" = l'APK proposé au téléchargement.
 const VERSIONS: { version: string; date: string; emoji: string; title: string; status?: "next" | "current"; changes: string[] }[] = [
   {
-    version: "1.1.0",
+    version: "1.1.1",
     date: "Bientôt",
+    emoji: "✨",
+    title: "Tout tient sur l'écran",
+    status: "next",
+    changes: [
+      "Les mini-jeux tiennent sur un seul écran, sans faire défiler",
+      "Écouter et Lentement deviennent deux boutons ronds de chaque côté du micro",
+      "Les tailles s'adaptent à la hauteur du téléphone, du plus petit au plus grand",
+      "Memory, passeport (4 colonnes), autocollant gagné et choix de la langue plus compacts",
+      "Les emojis sans animation (casque, cartes, passeport…) s'affichent à nouveau",
+      "Accueil allégé : titre plus court, bouton de test des notifications retiré",
+    ],
+  },
+  {
+    version: "1.1.0",
+    date: "4 novembre 2026",
     emoji: "🎉",
     title: "Quatre langues et des emojis qui bougent",
-    status: "next",
     changes: [
       "Au lancement, l'enfant écrit son prénom et choisit sa langue : anglais, espagnol, allemand ou italien",
       "Chaque langue a sa voix, ses mots, ses autocollants et son passeport",
