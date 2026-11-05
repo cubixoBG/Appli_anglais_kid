@@ -225,7 +225,7 @@ export function Memory({ words: stepWords, onFinish, onBack }: GameProps) {
   // Les 4 rangées de cartes tiennent dans la hauteur de l'écran : on déduit l'en-tête, la bulle,
   // les marges et les 3 espaces entre rangées.
   const { height } = useWindowDimensions();
-  const cardH = Math.max(72, Math.min(160, (height - 270) / 4));
+  const cardH = Math.max(64, Math.min(150, (height - 300) / 4));
 
   useEffect(() => {
     if (won) say(T().foundAll);
@@ -258,7 +258,7 @@ export function Memory({ words: stepWords, onFinish, onBack }: GameProps) {
       ) : (
         <Squirrel compact t={T().pairs} fr="Trouve les paires : une image et son mot !" />
       )}
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 12 }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 10 }}>
         {cards.map((c, i) => {
           const done = found.has(c.word.t);
           const shown = done || open.includes(i);
