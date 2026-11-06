@@ -1,0 +1,47 @@
+# Pipeline : vérifie l'appli mobile (app/) et le site (site/) à chaque push sur dev/main et sur chaque merge request.
+default:
+  image: node:24
+  interruptible: true
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main"
+
+stages:
+  - check
+  - build
+
+variables:
+  npm_config_cache: $CI_PROJECT_DIR/.npm
+
+# Appli Expo : types TypeScript + tests (score, données).
+app:check:
+  stage: check
+  cache:
+    key:
+      files: [app/package-lock.json]
+    paths: [.npm/]
+  script:
+    - cd app
+    - npm ci --prefer-offline --no-audit
+    - npm run typecheck
+    - npm test
+  rules:
+    - changes: [app/**/*, .gitlab-ci.yml]
+
+# Site Next.js : types + build de production (comme sur Hostinger).
+site:build:
+  stage: build
+  needs: []
+  cache:
+    key:
+      files: [site/package-lock.json]
+    paths: [.npm/]
+  script:
+    - cd site
+    - npm ci --prefer-offline --no-audit
+    - npx tsc --noEmit
+    - npm run build
+  rules:
+    - changes: [site/**/*, .gitlab-ci.yml]
