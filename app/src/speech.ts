@@ -4,10 +4,10 @@ import { File, Paths } from 'expo-file-system';
 import type { ExpoSpeechRecognitionModuleType } from 'expo-speech-recognition/build/ExpoSpeechRecognitionModule.types';
 import { T } from './lang';
 
-// Voix IA Okto (voice.okto.it). Sans clé, ou en cas d'erreur, on garde la voix du téléphone.
-// shortcut: clé EXPO_PUBLIC_ lisible dans l'APK, OK pour un essai ; passer par un relais serveur avant de publier.
-const OKTO_KEY = process.env.EXPO_PUBLIC_VOICE_KEY;
-const OKTO_VOICE = 'Kore'; // Kore, Aoede, Charon ou Puck
+// Voix IA Okto (voice.okto.it). En cas d'erreur ou sans réseau, on garde la voix du téléphone.
+// La clé Okto n'est jamais dans l'appli : le site (route /api/voix) la garde et ne renvoie qu'une adresse à usage unique.
+const VOICE_RELAY = 'https://langues.morgan-bonne.fr/api/voix';
+const OKTO_VOICE = 'Kore'; // doit être la voix demandée par le relais (site/app/api/voix/route.ts)
 let player: AudioPlayer | null = null;
 let stopCurrent: (() => void) | null = null;
 let turn = 0;
@@ -27,15 +27,14 @@ function failAll(e: Error) {
   jobs.clear();
 }
 
+let oktoOffUntil = 0;
+
 function openStream(): Promise<WebSocket> {
+  if (Date.now() < oktoOffUntil) return Promise.reject(new Error('Voix Okto en pause'));
   if (socket) return socket;
   socket = (async () => {
-    const res = await fetch('https://voice.okto.it/v1/stream', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${OKTO_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode: 'say', voice: OKTO_VOICE }),
-    });
-    if (!res.ok) throw new Error(`Okto stream ${res.status}`);
+    const res = await fetch(VOICE_RELAY, { method: 'POST' });
+    if (!res.ok) throw new Error(`Relais voix ${res.status}`);
     const { url } = await res.json();
     return new Promise<WebSocket>((resolve, reject) => {
       const ws = new WebSocket(url);
@@ -130,7 +129,7 @@ function stopAll() {
 export async function say(text: string, slow = false, voice = T().voice): Promise<void> {
   stopAll();
   const mine = ++turn;
-  if (OKTO_KEY && !slow) {
+  if (!slow) {
     try {
       const uri = await oktoFile(text);
       if (mine !== turn) return; // un autre say() est arrivé pendant le téléchargement
@@ -150,6 +149,7 @@ export async function say(text: string, slow = false, voice = T().voice): Promis
       });
     } catch (e) {
       console.warn(e);
+      oktoOffUntil = Date.now() + 60_000; // relais ou Okto en panne : voix du téléphone pendant 1 min, sans réessayer à chaque mot
     }
   }
   return speakPhone(text, slow, voice);

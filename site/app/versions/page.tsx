@@ -11,6 +11,20 @@ export const metadata: Metadata = {
 // status : "next" = prochaine version (pas encore téléchargeable), "current" = l'APK proposé au téléchargement.
 const VERSIONS: { version: string; date: string; emoji: string; title: string; status?: "next" | "current"; changes: string[] }[] = [
   {
+    version: "1.2.0",
+    date: "Bientôt",
+    emoji: "🗣️",
+    title: "Une vraie voix pour l'écureuil",
+    status: "next",
+    changes: [
+      "Les mots et les encouragements sont lus par une voix naturelle, générée par l'IA d'okto.it",
+      "La voix démarre vite : elle arrive en direct, au fil de la phrase",
+      "Chaque phrase n'est téléchargée qu'une fois : ensuite elle se rejoue instantanément, même sans réseau",
+      "Sans connexion, l'appli reprend automatiquement la voix du téléphone",
+      "Le bouton « Lentement » garde la voix du téléphone, plus facile à suivre",
+    ],
+  },
+  {
     version: "1.1.2",
     date: "5 novembre 2026",
     emoji: "🧳",

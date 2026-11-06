@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Mon voyage",
-    "slug": "applianglaiskid",
-    "version": "1.1.2",
+    "slug": "monvoyage",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,7 +12,10 @@
         "NSSpeechRecognitionUsageDescription": "La reconnaissance vocale sert à vérifier ta prononciation.",
         "NSMicrophoneUsageDescription": "Le micro sert à écouter ta prononciation. Rien n’est enregistré."
       },
-      "bundleIdentifier": "com.cubixobg.monvoyage"
+      "bundleIdentifier": "fr.morganbonne.monvoyage",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -23,9 +26,14 @@
       },
       "predictiveBackGestureEnabled": false,
       "permissions": [
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
       ],
-      "package": "com.cubixobg.monvoyage"
+      "blockedPermissions": [
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      ],
+      "package": "fr.morganbonne.monvoyage"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -43,17 +51,17 @@
       "expo-image",
       "expo-audio"
     ],
-    "extra": {
-      "eas": {
-        "projectId": "779f89fb-873e-4a46-9d33-3cb4acfe7e28"
-      }
-    },
     "owner": "oktopod",
     "runtimeVersion": {
       "policy": "appVersion"
     },
+    "extra": {
+      "eas": {
+        "projectId": "d216eef1-5d85-41d0-9776-688cde40354b"
+      }
+    },
     "updates": {
-      "url": "https://u.expo.dev/779f89fb-873e-4a46-9d33-3cb4acfe7e28"
+      "url": "https://u.expo.dev/d216eef1-5d85-41d0-9776-688cde40354b"
     }
   }
 }
